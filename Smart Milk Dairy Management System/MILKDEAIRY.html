@@ -1,0 +1,1508 @@
+
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Digital Milk Dairy System</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --white: #ffffff;
+  --bg: #f4f6f9;
+  --surface: #ffffff;
+  --border: #e2e8f0;
+  --text: #1a202c;
+  --muted: #718096;
+  --accent: #2563eb;
+  --accent-light: #eff6ff;
+  --green: #16a34a;
+  --green-light: #f0fdf4;
+  --red: #dc2626;
+  --red-light: #fef2f2;
+  --yellow: #d97706;
+  --yellow-light: #fffbeb;
+  --purple: #7c3aed;
+  --purple-light: #f5f3ff;
+  --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.1);
+}
+body { font-family: -apple-system,"Segoe UI",system-ui,sans-serif; font-size:15px; line-height:1.6; color:var(--text); background:var(--bg); min-height:100vh; }
+
+/* NAV */
+nav {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px; height: 58px;
+  position: sticky; top: 0; z-index: 200;
+  box-shadow: var(--shadow);
+}
+.nav-brand { display:flex; align-items:center; gap:10px; cursor:pointer; }
+.nav-logo {
+  width: 36px; height: 36px; background: var(--accent);
+  border-radius: 8px; display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:18px; font-weight:800;
+}
+.nav-title { font-size:16px; font-weight:800; color:var(--text); }
+.nav-title span { color:var(--accent); }
+.nav-right { display:flex; gap:8px; align-items:center; }
+.nav-btn {
+  padding: 7px 16px; border-radius: 6px; font-size:13px; font-weight:600;
+  cursor:pointer; border: 1.5px solid var(--border); background:var(--white); color:var(--text);
+  transition: all .15s;
+}
+.nav-btn:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-light); }
+.nav-btn.nav-primary { background:var(--accent); color:#fff; border-color:var(--accent); }
+.nav-btn.nav-primary:hover { opacity:.88; }
+.nav-btn.active { color:var(--accent); border-color:var(--accent); background:var(--accent-light); }
+
+/* PAGE SYSTEM */
+.page { display:none; animation: fadeIn .2s ease; }
+.page.active { display:block; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+/* ── HOME ── */
+.hero-strip {
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 60%, #3b82f6 100%);
+  padding: 70px 24px 60px; text-align:center; color:#fff;
+}
+.hero-strip .label {
+  display:inline-block; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.3);
+  border-radius:20px; padding:4px 14px; font-size:12px; font-weight:600;
+  letter-spacing:.5px; margin-bottom:18px; text-transform:uppercase;
+}
+.hero-strip h1 { font-size:36px; font-weight:900; margin-bottom:14px; line-height:1.25; }
+.hero-strip h1 em { color:#93c5fd; font-style:normal; }
+.hero-strip p { font-size:16px; color:#bfdbfe; max-width:520px; margin:0 auto 36px; }
+.hero-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+.hero-btn {
+  padding:12px 26px; border-radius:8px; font-size:14px; font-weight:700;
+  cursor:pointer; border:none; transition:all .15s;
+}
+.hero-btn-primary { background:#fff; color:var(--accent); }
+.hero-btn-primary:hover { background:#eff6ff; }
+.hero-btn-outline { background:transparent; color:#fff; border:2px solid rgba(255,255,255,.5); }
+.hero-btn-outline:hover { background:rgba(255,255,255,.1); }
+
+.home-section { max-width:800px; margin:0 auto; padding:48px 24px 0; }
+.section-label { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--accent); margin-bottom:8px; }
+.section-heading { font-size:22px; font-weight:800; margin-bottom:28px; color:var(--text); }
+
+.feature-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; margin-bottom:48px; }
+.feature-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:10px;
+  padding:22px 18px; box-shadow:var(--shadow); transition:border-color .15s;
+}
+.feature-card:hover { border-color:var(--accent); }
+.feature-icon {
+  width:40px; height:40px; border-radius:8px; display:flex;
+  align-items:center; justify-content:center; font-size:18px; margin-bottom:12px;
+}
+.feature-card h3 { font-size:14px; font-weight:700; margin-bottom:5px; }
+.feature-card p { font-size:13px; color:var(--muted); }
+.icon-blue { background:var(--accent-light); }
+.icon-green { background:var(--green-light); }
+.icon-purple { background:var(--purple-light); }
+.icon-yellow { background:var(--yellow-light); }
+
+.login-cards { display:grid; grid-template-columns:1fr 1fr; gap:20px; max-width:600px; margin:0 auto 48px; }
+.login-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:12px;
+  padding:28px 24px; text-align:center; box-shadow:var(--shadow); cursor:pointer;
+  transition:all .2s;
+}
+.login-card:hover { border-color:var(--accent); box-shadow:var(--shadow-md); transform:translateY(-2px); }
+.login-card .lc-icon { font-size:36px; margin-bottom:12px; }
+.login-card h3 { font-size:16px; font-weight:700; margin-bottom:6px; }
+.login-card p { font-size:13px; color:var(--muted); margin-bottom:18px; }
+
+/* ── AUTH PAGES ── */
+.auth-page { min-height:calc(100vh - 58px); display:flex; align-items:center; justify-content:center; padding:40px 20px; }
+.auth-box {
+  background:var(--surface); border:1px solid var(--border); border-radius:14px;
+  padding:40px 36px; width:100%; max-width:420px; box-shadow:var(--shadow-md);
+}
+.auth-icon { width:52px; height:52px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px; margin:0 auto 16px; }
+.auth-icon-blue { background:var(--accent-light); }
+.auth-icon-purple { background:var(--purple-light); }
+.auth-box h2 { font-size:22px; font-weight:800; text-align:center; margin-bottom:4px; }
+.auth-box .sub { font-size:13px; color:var(--muted); text-align:center; margin-bottom:28px; }
+
+.form-group { margin-bottom:18px; }
+label { display:block; font-size:13px; font-weight:600; margin-bottom:6px; color:var(--text); }
+.input-wrap { position:relative; }
+.input-wrap input { padding-left:38px; }
+.input-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:15px; }
+input, select, textarea {
+  width:100%; padding:10px 13px; border:1.5px solid var(--border);
+  border-radius:7px; font-size:14px; font-family:inherit;
+  background:var(--white); color:var(--text); outline:none; transition:border-color .15s;
+}
+input:focus, select:focus, textarea:focus { border-color:var(--accent); }
+input[readonly] { background:#f8fafc; color:var(--muted); }
+
+.demo-hint {
+  background:var(--accent-light); border:1px solid #bfdbfe; border-radius:7px;
+  padding:10px 14px; font-size:12.5px; color:var(--accent); margin-bottom:20px;
+}
+.demo-hint strong { font-weight:700; }
+
+.alert {
+  padding:10px 14px; border-radius:7px; font-size:13px;
+  margin-bottom:16px; display:none; align-items:center; gap:8px;
+}
+.alert.error { background:var(--red-light); color:var(--red); border:1px solid #fca5a5; display:flex; }
+.alert.success { background:var(--green-light); color:var(--green); border:1px solid #86efac; display:flex; }
+
+.btn-full {
+  width:100%; padding:11px; border-radius:7px; font-size:15px; font-weight:700;
+  cursor:pointer; border:none; transition:all .15s; margin-top:4px;
+}
+.btn-full-blue { background:var(--accent); color:#fff; }
+.btn-full-blue:hover { background:#1d4ed8; }
+.btn-full-purple { background:var(--purple); color:#fff; }
+.btn-full-purple:hover { background:#6d28d9; }
+
+.auth-footer { text-align:center; margin-top:20px; font-size:13px; color:var(--muted); }
+.auth-link { color:var(--accent); cursor:pointer; font-weight:600; }
+.auth-link:hover { text-decoration:underline; }
+
+/* ── DASHBOARD ── */
+.dash { max-width:860px; margin:0 auto; padding:32px 24px; }
+.dash-topbar {
+  background:var(--surface); border:1px solid var(--border); border-radius:10px;
+  padding:18px 22px; display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:24px; flex-wrap:wrap; gap:12px; box-shadow:var(--shadow);
+}
+.farmer-info { display:flex; align-items:center; gap:14px; }
+.farmer-avatar {
+  width:44px; height:44px; background:var(--accent); color:#fff;
+  border-radius:10px; display:flex; align-items:center; justify-content:center;
+  font-size:18px; font-weight:800;
+}
+.farmer-name { font-size:16px; font-weight:700; }
+.farmer-meta { font-size:12px; color:var(--muted); }
+.btn-logout {
+  padding:7px 16px; border-radius:6px; font-size:13px; font-weight:600;
+  cursor:pointer; border:1.5px solid #fca5a5; background:var(--red-light); color:var(--red);
+  transition:all .15s;
+}
+.btn-logout:hover { background:var(--red); color:#fff; }
+
+.stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px; margin-bottom:24px; }
+.stat-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:10px;
+  padding:18px 16px; box-shadow:var(--shadow);
+}
+.stat-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); }
+.stat-value { font-size:26px; font-weight:900; margin:4px 0 2px; color:var(--accent); }
+.stat-unit { font-size:12px; color:var(--muted); }
+.stat-card.green .stat-value { color:var(--green); }
+.stat-card.purple .stat-value { color:var(--purple); }
+.stat-card.yellow .stat-value { color:var(--yellow); }
+
+.card-box {
+  background:var(--surface); border:1px solid var(--border); border-radius:10px;
+  box-shadow:var(--shadow); overflow:hidden; margin-bottom:24px;
+}
+.card-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 20px; border-bottom:1px solid var(--border);
+}
+.card-header h3 { font-size:15px; font-weight:700; }
+.tag { font-size:11px; background:var(--bg); border:1px solid var(--border); border-radius:4px; padding:2px 8px; color:var(--muted); font-weight:600; }
+
+table { width:100%; border-collapse:collapse; }
+thead th {
+  background:#f8fafc; font-size:11.5px; font-weight:700; text-transform:uppercase;
+  letter-spacing:.4px; color:var(--muted); padding:10px 16px; text-align:left;
+  border-bottom:1px solid var(--border);
+}
+tbody td { padding:11px 16px; font-size:13.5px; border-bottom:1px solid var(--border); vertical-align:middle; }
+tbody tr:last-child td { border-bottom:none; }
+tbody tr:hover td { background:#f8fafc; }
+
+.badge {
+  display:inline-flex; align-items:center; gap:4px;
+  padding:3px 10px; border-radius:20px; font-size:11.5px; font-weight:600;
+}
+.badge-green { background:var(--green-light); color:var(--green); }
+.badge-yellow { background:var(--yellow-light); color:var(--yellow); }
+.badge-blue { background:var(--accent-light); color:var(--accent); }
+.badge-red { background:var(--red-light); color:var(--red); }
+
+.empty-row td { text-align:center; padding:32px; color:var(--muted); font-size:14px; }
+
+/* ── ADMIN PANEL ── */
+.admin-topbar {
+  background:var(--purple); color:#fff;
+  padding:0 28px; display:flex; align-items:center; justify-content:space-between;
+  height:50px; position:sticky; top:58px; z-index:100;
+}
+.admin-topbar-title { font-size:14px; font-weight:700; }
+.admin-topbar-right { display:flex; gap:8px; align-items:center; font-size:13px; opacity:.9; }
+
+.admin-layout { max-width:900px; margin:0 auto; padding:28px 24px; }
+
+.tab-row { display:flex; gap:0; border-bottom:2px solid var(--border); margin-bottom:24px; }
+.tab-btn {
+  padding:9px 20px; background:none; border:none; font-size:14px; font-weight:600;
+  color:var(--muted); cursor:pointer; border-bottom:2.5px solid transparent;
+  margin-bottom:-2px; transition:all .15s;
+}
+.tab-btn:hover { color:var(--text); }
+.tab-btn.on { color:var(--purple); border-bottom-color:var(--purple); }
+.tab-pane { display:none; }
+.tab-pane.on { display:block; }
+
+.pane-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; flex-wrap:wrap; gap:10px; }
+.pane-title { font-size:18px; font-weight:800; }
+
+.btn-add { padding:8px 18px; border-radius:7px; font-size:13px; font-weight:700; background:var(--accent); color:#fff; border:none; cursor:pointer; }
+.btn-add:hover { background:#1d4ed8; }
+.btn-edit { padding:4px 12px; border-radius:5px; font-size:12px; font-weight:600; background:var(--surface); color:var(--text); border:1px solid var(--border); cursor:pointer; }
+.btn-edit:hover { border-color:var(--accent); color:var(--accent); }
+.btn-save { padding:10px 24px; border-radius:7px; font-size:14px; font-weight:700; background:var(--green); color:#fff; border:none; cursor:pointer; }
+.btn-save:hover { background:#15803d; }
+
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.col-span-2 { grid-column:1/-1; }
+
+.section-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:24px; box-shadow:var(--shadow); margin-bottom:20px; }
+
+.success-inline { font-size:13px; color:var(--green); font-weight:600; margin-left:12px; }
+
+/* MODAL */
+.overlay { display:none; position:fixed; inset:0; background:rgba(15,23,42,.5); z-index:500; align-items:center; justify-content:center; }
+.overlay.open { display:flex; }
+.modal {
+  background:var(--surface); border-radius:14px; padding:32px;
+  width:100%; max-width:500px; max-height:90vh; overflow-y:auto;
+  margin:16px; box-shadow: 0 20px 60px rgba(0,0,0,.2);
+  animation: fadeIn .2s ease;
+}
+.modal-title { font-size:18px; font-weight:800; margin-bottom:24px; }
+.modal-footer { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
+.btn-cancel { padding:8px 18px; border-radius:6px; font-size:13px; font-weight:600; background:var(--bg); color:var(--text); border:1px solid var(--border); cursor:pointer; }
+.btn-cancel:hover { background:var(--border); }
+.btn-confirm { padding:8px 20px; border-radius:6px; font-size:13px; font-weight:700; background:var(--accent); color:#fff; border:none; cursor:pointer; }
+.btn-confirm:hover { background:#1d4ed8; }
+
+/* FOOTER */
+.site-footer { border-top:1px solid var(--border); text-align:center; padding:20px; font-size:12px; color:var(--muted); margin-top:40px; }
+
+/* RESPONSIVE */
+@media(max-width:600px) {
+  .form-grid { grid-template-columns:1fr; }
+  .col-span-2 { grid-column:1; }
+  .login-cards { grid-template-columns:1fr; }
+  .auth-box { padding:28px 20px; }
+  .hero-strip h1 { font-size:26px; }
+}
+</style>
+</head>
+<body>
+
+
+<nav>
+  <div class="nav-brand" id="goHome">
+    <div class="nav-logo">M</div>
+    <div class="nav-title"><span>Milk</span>Dairy</div>
+  </div>
+  <div class="nav-right" id="navRight">
+    <button class="nav-btn" id="navFarmer">🌾 Farmer Login</button>
+    <button class="nav-btn nav-primary" id="navCompany">🏢 Company Login</button>
+  </div>
+</nav>
+
+
+<div class="page active" id="page-home">
+  <div class="hero-strip">
+    <div class="label">Digital Dairy Platform</div>
+    <h1>Smart <em>Milk Dairy</em><br />Management System</h1>
+    <p>Track milk collection, manage farmer payments, and keep all dairy records — all in one place.</p>
+    <div class="hero-actions">
+      <button class="hero-btn hero-btn-primary" id="heroFarmerBtn">🌾 Farmer Login</button>
+      <button class="hero-btn hero-btn-outline" id="heroCompanyBtn">🏢 Company Login</button>
+    </div>
+  </div>
+
+  <div class="home-section">
+    <div class="section-label">Choose Your Portal</div>
+    <div class="section-heading">Who are you logging in as?</div>
+    <div class="login-cards">
+      <div class="login-card" id="cardFarmer">
+        <div class="lc-icon">🌾</div>
+        <h3>Farmer Portal</h3>
+        <p>View your milk collection records, daily rates, and monthly earnings.</p>
+        <button class="btn-full btn-full-blue" style="padding:9px">Login as Farmer</button>
+      </div>
+      <div class="login-card" id="cardCompany">
+        <div class="lc-icon">🏢</div>
+        <h3>Company / Admin</h3>
+        <p>Manage farmers, add milk entries, set rates, and view full reports.</p>
+        <button class="btn-full btn-full-purple" style="padding:9px">Login as Company</button>
+      </div>
+    </div>
+
+    <div class="section-label">Platform Features</div>
+    <div class="section-heading">Everything you need</div>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon icon-blue">🥛</div>
+        <h3>Milk Collection</h3>
+        <p>Log morning &amp; evening shift entries with quantity and fat percentage.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-green">💰</div>
+        <h3>Payments</h3>
+        <p>Auto-calculate farmer earnings based on liters and current rate.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-purple">📊</div>
+        <h3>Live Dashboard</h3>
+        <p>Farmers see real-time totals, rate per liter, and payment status.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-yellow">⚙️</div>
+        <h3>Admin Control</h3>
+        <p>Company admin manages all farmer profiles and rate settings.</p>
+      </div>
+    </div>
+  </div>
+  <footer class="site-footer">Made with IBM Bob  |  Digital Milk Dairy System © 2025</footer>
+</div>
+
+
+
+<div class="page" id="page-farmer-login">
+  <div class="auth-page">
+    <div class="auth-box">
+      <div class="auth-icon auth-icon-blue">🌾</div>
+      <h2>Farmer Login</h2>
+      <p class="sub">Enter your Member ID and password to access your milk records.</p>
+
+      <div class="demo-hint">
+        <strong>Demo accounts:</strong><br />
+        Member ID <strong>FM-001</strong> → Password <strong>1234</strong><br />
+        Member ID <strong>FM-002</strong> → Password <strong>abcd</strong>
+      </div>
+
+      <div class="alert" id="farmerAlert"></div>
+
+      <div class="form-group">
+        <label>Member ID</label>
+        <div class="input-wrap">
+          <span class="input-icon">🪪</span>
+          <input type="text" id="fLoginId" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="fLoginPass" />
+        </div>
+      </div>
+      <button class="btn-full btn-full-blue" id="farmerLoginBtn">Login →</button>
+      <div class="auth-footer">
+        Not a farmer? <span class="auth-link" id="switchToCompany">Login as Company</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="page" id="page-farmer-dash">
+  <div class="dash">
+    <div class="dash-topbar">
+      <div class="farmer-info">
+        <div class="farmer-avatar" id="fAvatar">R</div>
+        <div>
+          <div class="farmer-name" id="fName">—</div>
+          <div class="farmer-meta" id="fMeta">—</div>
+        </div>
+      </div>
+      <button class="btn-logout" id="farmerLogout">Logout</button>
+    </div>
+
+    <div class="stats-grid" id="farmerStats"></div>
+
+    <div class="card-box">
+      <div class="card-header">
+        <h3>🥛 Milk Collection Records</h3>
+        <span class="tag">June 2025</span>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>Date</th><th>Shift</th><th>Qty (L)</th><th>Fat %</th><th>Rate (₹/L)</th><th>Amount (₹)</th><th>Status</th></tr></thead>
+          <tbody id="fRecordsBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card-box">
+      <div class="card-header">
+        <h3>🌿 Feed / Deductions This Month</h3>
+        <span class="tag" id="fFeedTotal">Total: ₹0.00</span>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>Date</th><th>Feed Item</th><th>Qty</th><th>Unit Price (₹)</th><th>Total (₹)</th></tr></thead>
+          <tbody id="fFeedBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <footer class="site-footer">Made with IBM Bob</footer>
+</div>
+
+
+
+<div class="page" id="page-company-login">
+  <div class="auth-page">
+    <div class="auth-box">
+      <div class="auth-icon auth-icon-purple">🏢</div>
+      <h2>Company Admin Login</h2>
+      <p class="sub">Authorized Sunrise Milk Dairy administrators only.</p>
+
+      <div class="demo-hint" style="background:var(--purple-light);border-color:#c4b5fd;color:var(--purple)">
+        <strong>Demo credentials:</strong><br />
+        Username <strong>admin</strong> → Password <strong>dairy@2025</strong>
+      </div>
+
+      <div class="alert" id="companyAlert"></div>
+
+      <div class="form-group">
+        <label>Admin Username</label>
+        <div class="input-wrap">
+          <span class="input-icon">👤</span>
+          <input type="text" id="cLoginUser" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="cLoginPass" />
+        </div>
+      </div>
+      <button class="btn-full btn-full-purple" id="companyLoginBtn">Login as Company →</button>
+      <div class="auth-footer">
+        Are you a farmer? <span class="auth-link" id="switchToFarmer">Farmer Login</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="page" id="page-admin">
+  <div class="admin-topbar">
+    <div class="admin-topbar-title">🏢 Sunrise Milk Dairy — Admin Panel</div>
+    <div class="admin-topbar-right">
+      <span>👤 admin</span>
+      <button class="btn-logout" style="font-size:12px;padding:5px 12px" id="adminLogout">Logout</button>
+    </div>
+  </div>
+
+  <div class="admin-layout">
+    <div class="tab-row">
+      <button class="tab-btn on" data-tab="t-farmers">🌾 Farmers</button>
+      <button class="tab-btn" data-tab="t-entry">🥛 Milk Entry</button>
+      <button class="tab-btn" data-tab="t-rates">💰 Rates</button>
+      <button class="tab-btn" data-tab="t-inventory">🗂 Feed Inventory</button>
+      <button class="tab-btn" data-tab="t-feed">🌿 Feed / Deductions</button>
+      <button class="tab-btn" data-tab="t-summary">📊 Summary</button>
+    </div>
+
+    
+    <div class="tab-pane on" id="t-farmers">
+      <div class="pane-header">
+        <div class="pane-title">Registered Farmers</div>
+        <button class="btn-add" id="btnAddFarmer">+ Add Farmer</button>
+      </div>
+      <div class="card-box">
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Member ID</th><th>Name</th><th>Village</th><th>Phone</th><th>Bank A/C</th><th>Status</th><th></th></tr></thead>
+            <tbody id="adminFarmersBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="tab-pane" id="t-entry">
+      <div class="pane-header"><div class="pane-title">Add Milk Collection Entry</div></div>
+      <div class="section-card">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Farmer</label>
+            <select id="eF"></select>
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" id="eD" />
+          </div>
+          <div class="form-group">
+            <label>Shift</label>
+            <select id="eS"><option>Morning</option><option>Evening</option></select>
+          </div>
+          <div class="form-group">
+            <label>Quantity (Liters)</label>
+            <input type="number" id="eQ" />
+          </div>
+          <div class="form-group">
+            <label>Fat %</label>
+            <input type="number" id="eFat" />
+          </div>
+          <div class="form-group">
+            <label>Rate (₹/L) — Auto</label>
+            <input type="number" id="eR" />
+          </div>
+
+          <!-- Feed deduction inside milk entry -->
+          <div class="form-group">
+            <label>Feed Type (optional)</label>
+            <select id="eFeedType">
+              <option value="">— No feed deduction —</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Feed Qty / Units</label>
+            <input type="number" id="eFeedQty" placeholder="0" min="0" />
+          </div>
+          <div class="form-group">
+            <label>Feed Cost (₹) — Auto</label>
+            <input type="number" id="eFeedCost" readonly placeholder="auto" />
+          </div>
+          <div class="form-group" style="display:flex;align-items:flex-end">
+            <div style="font-size:12px;color:var(--muted);line-height:1.5;">
+              Feed cost is auto-calculated from inventory price × units and deducted from this entry's net payment.
+            </div>
+          </div>
+
+          <div class="col-span-2" style="display:flex;align-items:center;gap:12px">
+            <button class="btn-save" id="btnSaveEntry">Save Entry</button>
+            <span class="success-inline" id="entryMsg"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-box">
+        <div class="card-header">
+          <h3>Recent Entries</h3>
+          <button class="btn-edit" id="btnExportEntries" style="background:var(--green-light);color:var(--green);border-color:#86efac;font-weight:700;">⬇ Export CSV</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Farmer</th><th>Date</th><th>Shift</th><th>Qty (L)</th><th>Fat %</th><th>Rate</th><th>Gross (₹)</th><th>Feed (₹)</th><th>Net (₹)</th></tr></thead>
+            <tbody id="adminEntriesBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    
+    <!-- FEED INVENTORY TAB -->
+    <div class="tab-pane" id="t-inventory">
+      <div class="pane-header">
+        <div class="pane-title">Feed Inventory</div>
+        <button class="btn-add" id="btnAddFeedItem">+ Add Feed Type</button>
+      </div>
+      <div class="section-card" id="invFormCard" style="display:none">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Feed Name *</label>
+            <input type="text" id="invName" placeholder="e.g. Cattle Pellets, Wheat Bran" />
+          </div>
+          <div class="form-group">
+            <label>Unit *</label>
+            <select id="invUnit">
+              <option>kg</option>
+              <option>bag</option>
+              <option>litre</option>
+              <option>packet</option>
+              <option>piece</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Price per Unit (₹) *</label>
+            <input type="number" id="invPrice" placeholder="0.00" />
+          </div>
+          <div class="form-group">
+            <label>Stock Qty</label>
+            <input type="number" id="invStock" placeholder="0" />
+          </div>
+          <div class="col-span-2" style="display:flex;gap:10px;align-items:center">
+            <button class="btn-save" id="btnSaveInvItem">Save</button>
+            <button class="btn-cancel" id="btnCancelInv">Cancel</button>
+            <span class="success-inline" id="invMsg"></span>
+          </div>
+        </div>
+      </div>
+      <div class="card-box">
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Feed Name</th><th>Unit</th><th>Price (₹/unit)</th><th>Stock Qty</th><th></th></tr></thead>
+            <tbody id="invBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEED DEDUCTIONS TAB -->
+    <div class="tab-pane" id="t-feed">
+      <div class="pane-header"><div class="pane-title">Cow Feed / Deductions</div></div>
+
+      <div class="section-card">
+        <div style="font-size:13px;color:var(--muted);margin-bottom:16px;">Record a feed purchase for a farmer. The cost is auto-deducted from their monthly payment.</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Farmer</label>
+            <select id="fdFarmer"></select>
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" id="fdDate" />
+          </div>
+          <div class="form-group">
+            <label>Feed Item</label>
+            <select id="fdFeedItem">
+              <option value="">— Select feed item —</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Quantity / Units</label>
+            <input type="number" id="fdQty" placeholder="0" min="0" />
+          </div>
+          <div class="form-group">
+            <label>Price per Unit (₹) — editable</label>
+            <input type="number" id="fdUnitPrice" placeholder="auto" />
+          </div>
+          <div class="form-group">
+            <label>Total Amount (₹) — auto</label>
+            <input type="number" id="fdAmt" placeholder="0.00" readonly style="background:#f8fafc;font-weight:700" />
+          </div>
+          <div class="col-span-2" style="display:flex;align-items:center;gap:12px">
+            <button class="btn-save" id="btnSaveFeed">Save Deduction</button>
+            <span class="success-inline" id="feedMsg"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-box">
+        <div class="card-header"><h3>Feed / Deduction Records</h3></div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Farmer</th><th>Date</th><th>Feed Item</th><th>Qty</th><th>Unit Price (₹)</th><th>Total (₹)</th><th></th></tr></thead>
+            <tbody id="feedBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-pane" id="t-rates">
+      <div class="pane-header"><div class="pane-title">Milk Rate Settings</div></div>
+      <div class="section-card" style="max-width:420px">
+        <div class="form-group">
+          <label>Rate per Liter (₹)</label>
+          <input type="number" id="rateInput" />
+        </div>
+        <div class="form-group">
+          <label>Effective From</label>
+          <input type="date" id="rateDate" />
+        </div>
+        <div class="form-group">
+          <label>Reason / Notes</label>
+          <textarea id="rateNote"></textarea>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <button class="btn-save" id="btnUpdateRate">Update Rate</button>
+          <span class="success-inline" id="rateMsg"></span>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="tab-pane" id="t-summary">
+      <div class="pane-header">
+        <div class="pane-title">Monthly Summary</div>
+        <button class="btn-edit" id="btnExportSummary" style="background:var(--green-light);color:var(--green);border-color:#86efac;font-weight:700;">⬇ Download Report (CSV)</button>
+      </div>
+      <div class="stats-grid" id="adminStats" style="margin-bottom:20px"></div>
+      <div class="card-box">
+        <div class="card-header"><h3>Farmer-wise Monthly Payment Report</h3><span class="tag" id="summaryMonthTag">June 2025</span></div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Member ID</th><th>Farmer Name</th><th>Total Qty (L)</th><th>Rate (₹/L)</th><th>Gross Amount (₹)</th><th>Feed Deduction (₹)</th><th>Net Payable (₹)</th><th>Status</th></tr></thead>
+            <tbody id="summaryBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="site-footer">Made with IBM Bob</footer>
+</div>
+
+
+
+<!-- COLUMN PICKER MODAL -->
+<div class="overlay" id="colPickerOverlay">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-title">Choose Report Columns</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:18px;">Select which fields to include in the downloaded CSV.</p>
+    <div id="colPickerList" style="display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;margin-bottom:20px;"></div>
+    <div class="modal-footer">
+      <button class="btn-cancel" id="colPickerCancel">Cancel</button>
+      <button class="btn-confirm" id="colPickerDownload">⬇ Download CSV</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT FEED INVENTORY MODAL -->
+<div class="overlay" id="invEditOverlay">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-title">Edit Feed Item</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Feed Name *</label>
+        <input type="text" id="invEditName" />
+      </div>
+      <div class="form-group">
+        <label>Unit *</label>
+        <select id="invEditUnit">
+          <option>kg</option><option>bag</option><option>litre</option><option>packet</option><option>piece</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Price per Unit (₹) *</label>
+        <input type="number" id="invEditPrice" />
+      </div>
+      <div class="form-group">
+        <label>Stock Qty</label>
+        <input type="number" id="invEditStock" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" id="invEditCancel">Cancel</button>
+      <button class="btn-confirm" id="invEditSave">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">Add New Farmer</div>
+    <div class="alert" id="modalAlert"></div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Member ID *</label>
+        <input type="text" id="mId" />
+      </div>
+      <div class="form-group">
+        <label>Full Name *</label>
+        <input type="text" id="mName" />
+      </div>
+      <div class="form-group">
+        <label>Village / Area *</label>
+        <input type="text" id="mVillage" />
+      </div>
+      <div class="form-group">
+        <label>Phone *</label>
+        <input type="text" id="mPhone" />
+      </div>
+      <div class="form-group">
+        <label>Bank Account No.</label>
+        <input type="text" id="mBank" />
+      </div>
+      <div class="form-group">
+        <label>IFSC Code</label>
+        <input type="text" id="mIfsc" />
+      </div>
+      <div class="form-group col-span-2">
+        <label>Login Password *</label>
+        <input type="password" id="mPass" />
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="mStatus"><option>Active</option><option>Inactive</option></select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" id="modalCancel">Cancel</button>
+      <button class="btn-confirm" id="modalSave">Save Farmer</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script>
+// Express.js Example
+/*
+const express = require('express');
+const cors = require('cors');
+const app = express();
+
+app.use(cors()); // Enable CORS for front-end requests
+app.use(express.json());
+
+app.get('/api/farmers', (req, res) => {
+  res.json([
+    { id: 'FM-001', name: 'Ramesh Patel', village: 'Khodiyar' }
+  ]);
+});
+
+app.listen(5000, () => console.log('Server running on port 5000'));
+*/
+
+// Front-end Fetch Request
+async function getFarmers() {
+  try {
+    const response = await fetch('http://localhost:5000/api/farmers');
+    const farmers = await response.json();
+    console.log(farmers);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+}
+
+/* ── DATA ── */
+var farmers = [
+  { id:'FM-001', name:'Ramesh Patel',   village:'Khodiyar',  phone:'9876543210', bank:'1234567890', ifsc:'SBIN0001234', pass:'1234',    status:'Active' },
+  { id:'FM-002', name:'Sunita Verma',   village:'Nandasan',  phone:'9123456789', bank:'9876543210', ifsc:'HDFC0004321', pass:'abcd',    status:'Active' },
+  { id:'FM-003', name:'Bharat Singh',   village:'Unjha',     phone:'9988776655', bank:'1122334455', ifsc:'ICIC0005678', pass:'pass3',   status:'Active' },
+];
+
+var entries = [
+  { farmerId:'FM-001', date:'2025-06-01', shift:'Morning', qty:12.5, fat:4.2, rate:32, amount:400,  status:'Paid' },
+  { farmerId:'FM-001', date:'2025-06-01', shift:'Evening', qty:10.0, fat:4.0, rate:32, amount:320,  status:'Paid' },
+  { farmerId:'FM-002', date:'2025-06-01', shift:'Morning', qty:8.0,  fat:3.8, rate:32, amount:256,  status:'Pending' },
+  { farmerId:'FM-001', date:'2025-06-02', shift:'Morning', qty:13.0, fat:4.3, rate:32, amount:416,  status:'Paid' },
+  { farmerId:'FM-003', date:'2025-06-02', shift:'Evening', qty:9.5,  fat:4.1, rate:32, amount:304,  status:'Pending' },
+];
+
+var currentRate = 32;
+
+/* Feed inventory — the "menu" of feed products with prices */
+var feedInventory = [
+  { id:1, name:'Cattle Pellets',  unit:'kg',  price:18,  stock:200 },
+  { id:2, name:'Wheat Bran',      unit:'kg',  price:12,  stock:150 },
+  { id:3, name:'Mineral Mix',     unit:'kg',  price:55,  stock:50  },
+  { id:4, name:'Green Fodder',    unit:'kg',  price:4,   stock:500 },
+];
+var invNextId = 5;
+var editingInvId = null;
+
+/* Per-farmer feed deduction records */
+var feedDeductions = [
+  { id:1, farmerId:'FM-001', date:'2025-06-01', item:'Cattle Pellets', qty:25, unitPrice:18, amount:450 },
+  { id:2, farmerId:'FM-002', date:'2025-06-02', item:'Mineral Mix',    qty:2,  unitPrice:55, amount:110 },
+];
+var feedNextId = 3;
+
+/* ── HELPERS ── */
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  var pg = document.getElementById(id);
+  if (pg) pg.classList.add('active');
+  // update nav buttons active state
+  var navFarmer  = document.getElementById('navFarmer');
+  var navCompany = document.getElementById('navCompany');
+  navFarmer.classList.remove('active');
+  navCompany.classList.remove('active');
+  if (id === 'page-farmer-login' || id === 'page-farmer-dash') navFarmer.classList.add('active');
+  if (id === 'page-company-login' || id === 'page-admin')      navCompany.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function showAlert(elId, msg, type) {
+  var el = document.getElementById(elId);
+  el.textContent = msg;
+  el.className = 'alert ' + type;
+}
+
+function fmt(n) { return '₹' + Number(n).toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+
+/* ── NAV ── */
+document.getElementById('goHome').addEventListener('click', function(){ showPage('page-home'); });
+document.getElementById('navFarmer').addEventListener('click', function(){ showPage('page-farmer-login'); });
+document.getElementById('navCompany').addEventListener('click', function(){ showPage('page-company-login'); });
+
+/* ── HOME BUTTONS ── */
+document.getElementById('heroFarmerBtn').addEventListener('click', function(){ showPage('page-farmer-login'); });
+document.getElementById('heroCompanyBtn').addEventListener('click', function(){ showPage('page-company-login'); });
+document.getElementById('cardFarmer').addEventListener('click', function(){ showPage('page-farmer-login'); });
+document.getElementById('cardCompany').addEventListener('click', function(){ showPage('page-company-login'); });
+
+/* ── SWITCH LINKS ── */
+document.getElementById('switchToCompany').addEventListener('click', function(){ showPage('page-company-login'); });
+document.getElementById('switchToFarmer').addEventListener('click',  function(){ showPage('page-farmer-login'); });
+
+/* ── FARMER LOGIN ── */
+document.getElementById('farmerLoginBtn').addEventListener('click', function(){
+  var id   = document.getElementById('fLoginId').value.trim();
+  var pass = document.getElementById('fLoginPass').value.trim();
+  var farmer = farmers.find(function(f){ return f.id === id && f.pass === pass && f.status === 'Active'; });
+  if (!farmer) { showAlert('farmerAlert', '❌ Invalid Member ID or password.', 'error'); return; }
+  loadFarmerDash(farmer);
+  showPage('page-farmer-dash');
+});
+
+function loadFarmerDash(farmer) {
+  document.getElementById('fAvatar').textContent = farmer.name.charAt(0);
+  document.getElementById('fName').textContent   = farmer.name;
+  document.getElementById('fMeta').textContent   = 'Member ID: ' + farmer.id + ' | ' + farmer.village;
+
+  var myEntries = entries.filter(function(e){ return e.farmerId === farmer.id; });
+  var myFeed    = feedDeductions.filter(function(d){ return d.farmerId === farmer.id; });
+  var totalQty  = myEntries.reduce(function(s,e){ return s + e.qty; }, 0);
+  var totalAmt  = myEntries.reduce(function(s,e){ return s + e.amount; }, 0);
+  var totalFeed = myFeed.reduce(function(s,d){ return s + d.amount; }, 0);
+  var netAmt    = totalAmt - totalFeed;
+  var paid      = myEntries.filter(function(e){ return e.status==='Paid'; }).reduce(function(s,e){ return s+e.amount; },0);
+
+  document.getElementById('farmerStats').innerHTML =
+    stat('Total Milk (L)',    totalQty.toFixed(1), 'Litres this month',    '') +
+    stat('Gross Earnings',   fmt(totalAmt),        'Before deductions',    'green') +
+    stat('Feed Deduction',   fmt(totalFeed),       'Cow feed / purchases', 'yellow') +
+    stat('Net Payable',      fmt(netAmt),          'After deductions',     'purple');
+
+  var rows = myEntries.length ? myEntries.map(function(e){
+    return '<tr><td>'+e.date+'</td><td>'+e.shift+'</td><td>'+e.qty.toFixed(1)+'</td><td>'+e.fat+'</td><td>₹'+e.rate+'</td><td>'+fmt(e.amount)+'</td><td>'+badge(e.status)+'</td></tr>';
+  }).join('') : '<tr class="empty-row"><td colspan="7">No records found for this month.</td></tr>';
+  document.getElementById('fRecordsBody').innerHTML = rows;
+
+  // Feed deductions card — always visible
+  document.getElementById('fFeedTotal').textContent = 'Total: ' + fmt(totalFeed);
+  document.getElementById('fFeedBody').innerHTML = myFeed.length
+    ? myFeed.map(function(d){
+        return '<tr>' +
+          '<td>'+d.date+'</td>' +
+          '<td>'+d.item+'</td>' +
+          '<td>'+(d.qty != null ? d.qty : '—')+'</td>' +
+          '<td>'+(d.unitPrice ? '₹'+d.unitPrice : '—')+'</td>' +
+          '<td style="color:var(--red);font-weight:600">- '+fmt(d.amount)+'</td>' +
+        '</tr>';
+      }).join('')
+    : '<tr class="empty-row"><td colspan="5">No feed deductions this month.</td></tr>';
+}
+
+function stat(label, value, unit, color) {
+  return '<div class="stat-card '+(color||'')+'"><div class="stat-label">'+label+'</div><div class="stat-value">'+value+'</div><div class="stat-unit">'+unit+'</div></div>';
+}
+
+function badge(s) {
+  var cls = s==='Paid' ? 'badge-green' : s==='Pending' ? 'badge-yellow' : 'badge-blue';
+  return '<span class="badge '+cls+'">'+s+'</span>';
+}
+
+document.getElementById('farmerLogout').addEventListener('click', function(){
+  document.getElementById('fLoginId').value = '';
+  document.getElementById('fLoginPass').value = '';
+  document.getElementById('farmerAlert').className = 'alert';
+  showPage('page-home');
+});
+
+/* ── COMPANY LOGIN ── */
+document.getElementById('companyLoginBtn').addEventListener('click', function(){
+  var user = document.getElementById('cLoginUser').value.trim();
+  var pass = document.getElementById('cLoginPass').value.trim();
+  if (user !== 'admin' || pass !== 'dairy@2025') { showAlert('companyAlert', '❌ Invalid admin credentials.', 'error'); return; }
+  loadAdminPanel();
+  showPage('page-admin');
+});
+
+document.getElementById('adminLogout').addEventListener('click', function(){
+  document.getElementById('cLoginUser').value = '';
+  document.getElementById('cLoginPass').value = '';
+  document.getElementById('companyAlert').className = 'alert';
+  showPage('page-home');
+});
+
+/* ── ADMIN TABS ── */
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('on'); });
+    document.querySelectorAll('.tab-pane').forEach(function(p){ p.classList.remove('on'); });
+    btn.classList.add('on');
+    var pane = document.getElementById(btn.getAttribute('data-tab'));
+    if (pane) pane.classList.add('on');
+  });
+});
+
+/* ── ADMIN PANEL LOAD ── */
+function loadAdminPanel() {
+  renderFarmersTable();
+  renderEntriesTable();
+  populateFarmerSelect();
+  populateFeedSelect();
+  populateEntryFeedTypeSelect();
+  renderFeedTable();
+  renderInventoryTable();
+  document.getElementById('eD').value        = new Date().toISOString().split('T')[0];
+  document.getElementById('fdDate').value    = new Date().toISOString().split('T')[0];
+  document.getElementById('rateInput').value = currentRate;
+  document.getElementById('rateDate').value  = new Date().toISOString().split('T')[0];
+  renderAdminStats();
+  renderSummary();
+}
+
+function renderFarmersTable() {
+  document.getElementById('adminFarmersBody').innerHTML = farmers.map(function(f){
+    return '<tr><td><strong>'+f.id+'</strong></td><td>'+f.name+'</td><td>'+f.village+'</td><td>'+f.phone+'</td><td>'+f.bank+'</td><td>'+badge(f.status)+'</td>' +
+      '<td style="display:flex;gap:6px">' +
+        '<button class="btn-edit" onclick="editFarmer(\''+f.id+'\')">Edit</button>' +
+        '<button class="btn-edit" style="color:var(--red);border-color:#fca5a5;background:var(--red-light)" onclick="deleteFarmer(\''+f.id+'\')">Delete</button>' +
+      '</td></tr>';
+  }).join('');
+}
+
+window.deleteFarmer = function(id) {
+  var f = farmers.find(function(x){ return x.id===id; });
+  if (!f) return;
+  if (!confirm('Delete farmer "' + f.name + '" (' + f.id + ')?\n\nThis will also remove all their milk entries and feed deductions. Cannot be undone.')) return;
+  farmers        = farmers.filter(function(x){ return x.id !== id; });
+  entries        = entries.filter(function(e){ return e.farmerId !== id; });
+  feedDeductions = feedDeductions.filter(function(d){ return d.farmerId !== id; });
+  renderFarmersTable();
+  populateFarmerSelect();
+  populateFeedSelect();
+  populateEntryFeedTypeSelect();
+  renderEntriesTable();
+  renderFeedTable();
+  renderAdminStats();
+  renderSummary();
+};
+
+function renderEntriesTable() {
+  var rows = entries.length ? entries.slice().reverse().map(function(e){
+    var f    = farmers.find(function(x){ return x.id===e.farmerId; });
+    var feed = e.feedCost || 0;
+    var net  = e.amount - feed;
+    return '<tr>' +
+      '<td>'+(f?f.name:e.farmerId)+'</td>' +
+      '<td>'+e.date+'</td><td>'+e.shift+'</td>' +
+      '<td>'+e.qty.toFixed(1)+'</td><td>'+e.fat+'</td><td>₹'+e.rate+'</td>' +
+      '<td>'+fmt(e.amount)+'</td>' +
+      '<td style="color:var(--red)">'+(feed>0?'- '+fmt(feed):'—')+'</td>' +
+      '<td style="font-weight:700">'+fmt(net)+'</td>' +
+    '</tr>';
+  }).join('') : '<tr class="empty-row"><td colspan="9">No entries yet.</td></tr>';
+  document.getElementById('adminEntriesBody').innerHTML = rows;
+}
+
+function populateFarmerSelect() {
+  var active = farmers.filter(function(f){ return f.status==='Active'; });
+  var opts   = active.map(function(f){ return '<option value="'+f.id+'">'+f.name+' ('+f.id+')</option>'; }).join('');
+  document.getElementById('eF').innerHTML = opts;
+}
+
+function populateFeedSelect() {
+  var active = farmers.filter(function(f){ return f.status==='Active'; });
+  document.getElementById('fdFarmer').innerHTML = active.map(function(f){
+    return '<option value="'+f.id+'">'+f.name+' ('+f.id+')</option>';
+  }).join('');
+  /* also refresh the feed-item dropdown in the deductions form */
+  document.getElementById('fdFeedItem').innerHTML =
+    '<option value="">— Select feed item —</option>' +
+    feedInventory.map(function(fi){
+      return '<option value="'+fi.id+'" data-price="'+fi.price+'" data-unit="'+fi.unit+'">'+fi.name+' (₹'+fi.price+'/'+fi.unit+')</option>';
+    }).join('');
+}
+
+function populateEntryFeedTypeSelect() {
+  var sel = document.getElementById('eFeedType');
+  sel.innerHTML = '<option value="">— No feed deduction —</option>' +
+    feedInventory.map(function(fi){
+      return '<option value="'+fi.id+'">'+fi.name+' (₹'+fi.price+'/'+fi.unit+')</option>';
+    }).join('');
+}
+
+/* ── FEED INVENTORY CRUD ── */
+function renderInventoryTable() {
+  var rows = feedInventory.length ? feedInventory.map(function(fi){
+    return '<tr>' +
+      '<td><strong>'+fi.name+'</strong></td>' +
+      '<td>'+fi.unit+'</td>' +
+      '<td>₹'+fi.price+'</td>' +
+      '<td>'+fi.stock+'</td>' +
+      '<td style="display:flex;gap:6px">' +
+        '<button class="btn-edit" onclick="editInvItem('+fi.id+')">Edit</button>' +
+        '<button class="btn-edit" style="color:var(--red);border-color:#fca5a5;background:var(--red-light)" onclick="deleteInvItem('+fi.id+')">Delete</button>' +
+      '</td>' +
+    '</tr>';
+  }).join('') : '<tr class="empty-row"><td colspan="5">No feed items. Add one above.</td></tr>';
+  document.getElementById('invBody').innerHTML = rows;
+  populateEntryFeedTypeSelect();
+  populateFeedSelect(); /* keep deductions feed-item dropdown in sync */
+}
+
+document.getElementById('btnAddFeedItem').addEventListener('click', function(){
+  editingInvId = null;
+  ['invName','invPrice','invStock'].forEach(function(id){ document.getElementById(id).value=''; });
+  document.getElementById('invUnit').value = 'kg';
+  document.getElementById('invMsg').textContent = '';
+  document.getElementById('invFormCard').style.display = '';
+});
+
+document.getElementById('btnCancelInv').addEventListener('click', function(){
+  document.getElementById('invFormCard').style.display = 'none';
+});
+
+document.getElementById('btnSaveInvItem').addEventListener('click', function(){
+  var name  = document.getElementById('invName').value.trim();
+  var unit  = document.getElementById('invUnit').value;
+  var price = parseFloat(document.getElementById('invPrice').value);
+  var stock = parseFloat(document.getElementById('invStock').value) || 0;
+  if (!name || isNaN(price) || price < 0) {
+    var m = document.getElementById('invMsg');
+    m.textContent = '⚠ Name and price required.'; m.style.color = 'var(--red)'; return;
+  }
+  if (editingInvId) {
+    var fi = feedInventory.find(function(x){ return x.id===editingInvId; });
+    if (fi) { fi.name=name; fi.unit=unit; fi.price=price; fi.stock=stock; }
+  } else {
+    feedInventory.push({ id: invNextId++, name:name, unit:unit, price:price, stock:stock });
+  }
+  document.getElementById('invFormCard').style.display = 'none';
+  renderInventoryTable();
+  var m = document.getElementById('invMsg');
+  m.textContent = ''; // hidden now
+});
+
+window.editInvItem = function(id) {
+  var fi = feedInventory.find(function(x){ return x.id===id; });
+  if (!fi) return;
+  document.getElementById('invEditName').value  = fi.name;
+  document.getElementById('invEditUnit').value  = fi.unit;
+  document.getElementById('invEditPrice').value = fi.price;
+  document.getElementById('invEditStock').value = fi.stock;
+  editingInvId = id;
+  document.getElementById('invEditOverlay').classList.add('open');
+};
+
+document.getElementById('invEditCancel').addEventListener('click', function(){
+  document.getElementById('invEditOverlay').classList.remove('open');
+});
+document.getElementById('invEditOverlay').addEventListener('click', function(e){
+  if (e.target === this) this.classList.remove('open');
+});
+document.getElementById('invEditSave').addEventListener('click', function(){
+  var fi = feedInventory.find(function(x){ return x.id===editingInvId; });
+  if (!fi) return;
+  var name  = document.getElementById('invEditName').value.trim();
+  var price = parseFloat(document.getElementById('invEditPrice').value);
+  if (!name || isNaN(price)) return;
+  fi.name  = name;
+  fi.unit  = document.getElementById('invEditUnit').value;
+  fi.price = price;
+  fi.stock = parseFloat(document.getElementById('invEditStock').value) || 0;
+  document.getElementById('invEditOverlay').classList.remove('open');
+  renderInventoryTable();
+});
+
+window.deleteInvItem = function(id) {
+  var fi = feedInventory.find(function(x){ return x.id===id; });
+  if (!fi) return;
+  if (!confirm('Delete "'+fi.name+'" from feed inventory?')) return;
+  feedInventory = feedInventory.filter(function(x){ return x.id!==id; });
+  renderInventoryTable();
+};
+
+/* Auto-fill feed cost when type or qty changes */
+document.getElementById('eFeedType').addEventListener('change', calcEntryFeedCost);
+document.getElementById('eFeedQty').addEventListener('input',  calcEntryFeedCost);
+function calcEntryFeedCost() {
+  var typeId = parseInt(document.getElementById('eFeedType').value);
+  var qty    = parseFloat(document.getElementById('eFeedQty').value) || 0;
+  var fi     = feedInventory.find(function(x){ return x.id===typeId; });
+  document.getElementById('eFeedCost').value = (fi && qty > 0) ? (fi.price * qty).toFixed(2) : '';
+}
+
+function renderFeedTable() {
+  var rows = feedDeductions.length ? feedDeductions.slice().reverse().map(function(d){
+    var f = farmers.find(function(x){ return x.id===d.farmerId; });
+    return '<tr>' +
+      '<td>'+(f?f.name:d.farmerId)+'</td>' +
+      '<td>'+d.date+'</td>' +
+      '<td>'+d.item+'</td>' +
+      '<td>'+(d.qty != null ? d.qty : '—')+'</td>' +
+      '<td>'+(d.unitPrice ? '₹'+d.unitPrice : '—')+'</td>' +
+      '<td style="color:var(--red);font-weight:600">'+fmt(d.amount)+'</td>' +
+      '<td><button class="btn-edit" style="color:var(--red);border-color:#fca5a5;background:var(--red-light)" onclick="deleteFeed('+d.id+')">Delete</button></td>' +
+    '</tr>';
+  }).join('') : '<tr class="empty-row"><td colspan="7">No deductions recorded.</td></tr>';
+  document.getElementById('feedBody').innerHTML = rows;
+}
+
+window.deleteFeed = function(id) {
+  feedDeductions = feedDeductions.filter(function(d){ return d.id !== id; });
+  renderFeedTable();
+  renderSummary();
+  renderAdminStats();
+};
+
+/* Auto-fill unit price when feed item selected in deductions form */
+document.getElementById('fdFeedItem').addEventListener('change', function(){
+  var opt = this.options[this.selectedIndex];
+  var price = opt ? parseFloat(opt.getAttribute('data-price')) : NaN;
+  document.getElementById('fdUnitPrice').value = (!isNaN(price) && price > 0) ? price : '';
+  calcFdTotal();
+});
+document.getElementById('fdQty').addEventListener('input', calcFdTotal);
+document.getElementById('fdUnitPrice').addEventListener('input', calcFdTotal);
+function calcFdTotal() {
+  var qty   = parseFloat(document.getElementById('fdQty').value) || 0;
+  var price = parseFloat(document.getElementById('fdUnitPrice').value) || 0;
+  document.getElementById('fdAmt').value = (qty > 0 && price > 0) ? (qty * price).toFixed(2) : '';
+}
+
+document.getElementById('btnSaveFeed').addEventListener('click', function(){
+  var fId       = document.getElementById('fdFarmer').value;
+  var dt        = document.getElementById('fdDate').value;
+  var feedSel   = document.getElementById('fdFeedItem');
+  var feedOptId = parseInt(feedSel.value) || 0;
+  var feedOpt   = feedSel.options[feedSel.selectedIndex];
+  var itemName  = feedOptId ? feedOpt.textContent.split(' (')[0] : '';
+  var qty       = parseFloat(document.getElementById('fdQty').value) || 0;
+  var unitPrice = parseFloat(document.getElementById('fdUnitPrice').value) || 0;
+  var amt       = parseFloat(document.getElementById('fdAmt').value);
+  var m = document.getElementById('feedMsg');
+  if (!fId || !dt || !feedOptId || qty <= 0 || unitPrice <= 0 || isNaN(amt) || amt <= 0) {
+    m.textContent = '⚠ Select a farmer, feed item, and enter a valid quantity.';
+    m.style.color = 'var(--red)'; return;
+  }
+  feedDeductions.push({ id: feedNextId++, farmerId: fId, date: dt, item: itemName, qty: qty, unitPrice: unitPrice, amount: amt });
+  document.getElementById('fdFeedItem').value  = '';
+  document.getElementById('fdQty').value       = '';
+  document.getElementById('fdUnitPrice').value = '';
+  document.getElementById('fdAmt').value       = '';
+  renderFeedTable();
+  renderSummary();
+  renderAdminStats();
+  m.textContent = '✔ Deduction saved!'; m.style.color = 'var(--green)';
+  setTimeout(function(){ m.textContent = ''; }, 3000);
+});
+
+function renderAdminStats() {
+  var totalQty = entries.reduce(function(s,e){ return s+e.qty; },0);
+  var totalAmt = entries.reduce(function(s,e){ return s+e.amount; },0);
+  var paid     = entries.filter(function(e){ return e.status==='Paid'; }).reduce(function(s,e){ return s+e.amount; },0);
+  document.getElementById('adminStats').innerHTML =
+    stat('Active Farmers', farmers.filter(function(f){ return f.status==='Active'; }).length, 'Registered', '') +
+    stat('Total Milk (L)', totalQty.toFixed(1), 'Collected this month', 'green') +
+    stat('Total Payout',   fmt(totalAmt), 'Gross earnings', 'purple') +
+    stat('Paid Out',       fmt(paid),     'Credited', 'yellow');
+}
+
+function renderSummary() {
+  var rows = farmers.map(function(f){
+    var fe   = entries.filter(function(e){ return e.farmerId===f.id; });
+    var fd   = feedDeductions.filter(function(d){ return d.farmerId===f.id; });
+    var qty  = fe.reduce(function(s,e){ return s+e.qty; },0);
+    var gross = fe.reduce(function(s,e){ return s+e.amount; },0);
+    var deduct = fd.reduce(function(s,d){ return s+d.amount; },0);
+    var net  = gross - deduct;
+    var rate = fe.length ? fe[fe.length-1].rate : currentRate;
+    var hasPending = fe.some(function(e){ return e.status==='Pending'; });
+    var st   = fe.length===0 ? '—' : hasPending ? 'Pending' : 'Paid';
+    return '<tr>' +
+      '<td>'+f.id+'</td>' +
+      '<td>'+f.name+'</td>' +
+      '<td>'+qty.toFixed(1)+'</td>' +
+      '<td>₹'+rate+'</td>' +
+      '<td>'+fmt(gross)+'</td>' +
+      '<td style="color:var(--red)">'+fmt(deduct)+'</td>' +
+      '<td style="font-weight:700">'+fmt(net)+'</td>' +
+      '<td>'+(st==='—'?'—':badge(st))+'</td>' +
+    '</tr>';
+  }).join('');
+  document.getElementById('summaryBody').innerHTML = rows || '<tr class="empty-row"><td colspan="8">No data.</td></tr>';
+}
+
+/* ── CSV EXPORT HELPERS ── */
+function downloadCSV(filename, rows) {
+  var csv = rows.map(function(r){ return r.map(function(c){ return '"'+String(c).replace(/"/g,'""')+'"'; }).join(','); }).join('\r\n');
+  var blob = new Blob([csv], { type: 'text/csv' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+document.getElementById('btnExportEntries').addEventListener('click', function(){
+  var rows = [['Farmer','Date','Shift','Qty (L)','Fat %','Rate (Rs/L)','Gross (Rs)','Feed Deduction (Rs)','Net (Rs)']];
+  entries.slice().reverse().forEach(function(e){
+    var f    = farmers.find(function(x){ return x.id===e.farmerId; });
+    var feed = e.feedCost || 0;
+    rows.push([(f?f.name:e.farmerId), e.date, e.shift, e.qty.toFixed(1), e.fat, e.rate, e.amount.toFixed(2), feed.toFixed(2), (e.amount-feed).toFixed(2)]);
+  });
+  downloadCSV('milk_entries.csv', rows);
+});
+
+/* ── COLUMN-PICKER for Monthly Report ── */
+var REPORT_COLS = [
+  { key:'id',      label:'Member ID',           fn: function(f,fe,fd,qty,gross,deduct,net,st){ return f.id; } },
+  { key:'name',    label:'Farmer Name',          fn: function(f,fe,fd,qty,gross,deduct,net,st){ return f.name; } },
+  { key:'phone',   label:'Phone',                fn: function(f,fe,fd,qty,gross,deduct,net,st){ return f.phone; } },
+  { key:'village', label:'Village',              fn: function(f,fe,fd,qty,gross,deduct,net,st){ return f.village; } },
+  { key:'qty',     label:'Total Qty (L)',         fn: function(f,fe,fd,qty,gross,deduct,net,st){ return qty.toFixed(1); } },
+  { key:'rate',    label:'Rate (Rs/L)',           fn: function(f,fe,fd,qty,gross,deduct,net,st){ return fe.length ? fe[fe.length-1].rate : currentRate; } },
+  { key:'gross',   label:'Gross Amount (Rs)',     fn: function(f,fe,fd,qty,gross,deduct,net,st){ return gross.toFixed(2); } },
+  { key:'deduct',  label:'Feed Deduction (Rs)',   fn: function(f,fe,fd,qty,gross,deduct,net,st){ return deduct.toFixed(2); } },
+  { key:'net',     label:'Net Payable (Rs)',      fn: function(f,fe,fd,qty,gross,deduct,net,st){ return net.toFixed(2); } },
+  { key:'status',  label:'Status',               fn: function(f,fe,fd,qty,gross,deduct,net,st){ return st; } },
+];
+
+document.getElementById('btnExportSummary').addEventListener('click', function(){
+  var list = document.getElementById('colPickerList');
+  list.innerHTML = REPORT_COLS.map(function(col){
+    var checked = ['name','qty','gross','deduct','net'].indexOf(col.key) !== -1 ? 'checked' : '';
+    return '<label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">' +
+      '<input type="checkbox" value="'+col.key+'" '+checked+' style="width:auto;margin:0"> '+col.label+
+    '</label>';
+  }).join('');
+  document.getElementById('colPickerOverlay').classList.add('open');
+});
+
+document.getElementById('colPickerCancel').addEventListener('click', function(){
+  document.getElementById('colPickerOverlay').classList.remove('open');
+});
+document.getElementById('colPickerOverlay').addEventListener('click', function(e){
+  if (e.target === this) this.classList.remove('open');
+});
+document.getElementById('colPickerDownload').addEventListener('click', function(){
+  var checked = Array.from(document.querySelectorAll('#colPickerList input:checked')).map(function(cb){ return cb.value; });
+  if (!checked.length) { alert('Please select at least one column.'); return; }
+  var selectedCols = REPORT_COLS.filter(function(c){ return checked.indexOf(c.key) !== -1; });
+  var rows = [selectedCols.map(function(c){ return c.label; })];
+  farmers.forEach(function(f){
+    var fe     = entries.filter(function(e){ return e.farmerId===f.id; });
+    var fd     = feedDeductions.filter(function(d){ return d.farmerId===f.id; });
+    var qty    = fe.reduce(function(s,e){ return s+e.qty; },0);
+    var gross  = fe.reduce(function(s,e){ return s+e.amount; },0);
+    var deduct = fd.reduce(function(s,d){ return s+d.amount; },0);
+    var net    = gross - deduct;
+    var hasPending = fe.some(function(e){ return e.status==='Pending'; });
+    var st     = fe.length===0 ? 'No Entries' : hasPending ? 'Pending' : 'Paid';
+    rows.push(selectedCols.map(function(c){ return c.fn(f,fe,fd,qty,gross,deduct,net,st); }));
+  });
+  downloadCSV('monthly_report.csv', rows);
+  document.getElementById('colPickerOverlay').classList.remove('open');
+});
+
+/* ── SAVE MILK ENTRY ── */
+document.getElementById('btnSaveEntry').addEventListener('click', function(){
+  var fId       = document.getElementById('eF').value;
+  var dt        = document.getElementById('eD').value;
+  var sh        = document.getElementById('eS').value;
+  var qty       = parseFloat(document.getElementById('eQ').value);
+  var fat       = parseFloat(document.getElementById('eFat').value);
+  var rt        = parseFloat(document.getElementById('eR').value) || currentRate;
+  var feedTypeId = parseInt(document.getElementById('eFeedType').value) || 0;
+  var feedQty   = parseFloat(document.getElementById('eFeedQty').value) || 0;
+  if (!fId || !dt || isNaN(qty) || qty<=0 || isNaN(fat)) {
+    document.getElementById('entryMsg').textContent='⚠ Fill all required fields.';
+    document.getElementById('entryMsg').style.color='var(--red)'; return;
+  }
+  var amt       = +(qty * rt).toFixed(2);
+  var fi        = feedInventory.find(function(x){ return x.id===feedTypeId; });
+  var feedCost  = (fi && feedQty > 0) ? +(fi.price * feedQty).toFixed(2) : 0;
+  var feedName  = fi ? fi.name + ' ×' + feedQty + ' ' + fi.unit : '';
+  entries.push({ farmerId:fId, date:dt, shift:sh, qty:qty, fat:fat, rate:rt, amount:amt, feedCost:feedCost, feedName:feedName, status:'Pending' });
+  if (feedCost > 0) {
+    feedDeductions.push({ id: feedNextId++, farmerId: fId, date: dt, item: feedName, amount: feedCost });
+    renderFeedTable();
+  }
+  document.getElementById('eQ').value      = '';
+  document.getElementById('eFat').value    = '';
+  document.getElementById('eFeedType').value = '';
+  document.getElementById('eFeedQty').value  = '';
+  document.getElementById('eFeedCost').value = '';
+  renderEntriesTable();
+  renderAdminStats();
+  renderSummary();
+  var msg = document.getElementById('entryMsg');
+  msg.textContent = '✔ Entry saved!';
+  msg.style.color = 'var(--green)';
+  setTimeout(function(){ msg.textContent=''; }, 3000);
+});
+
+/* ── UPDATE RATE ── */
+document.getElementById('btnUpdateRate').addEventListener('click', function(){
+  var v = parseFloat(document.getElementById('rateInput').value);
+  if (isNaN(v)||v<=0) return;
+  currentRate = v;
+  var msg = document.getElementById('rateMsg');
+  msg.textContent = '✔ Rate updated to ₹'+v+'/L';
+  setTimeout(function(){ msg.textContent=''; }, 3000);
+});
+
+/* ── FARMER MODAL ── */
+var editingId = null;
+
+document.getElementById('btnAddFarmer').addEventListener('click', function(){
+  editingId = null;
+  document.getElementById('modalTitle').textContent = 'Add New Farmer';
+  ['mId','mName','mVillage','mPhone','mBank','mIfsc','mPass'].forEach(function(id){ document.getElementById(id).value=''; });
+  document.getElementById('mStatus').value = 'Active';
+  document.getElementById('mId').readOnly = false;
+  document.getElementById('modalAlert').className='alert';
+  document.getElementById('modalOverlay').classList.add('open');
+});
+
+window.editFarmer = function(id) {
+  var f = farmers.find(function(x){ return x.id===id; });
+  if (!f) return;
+  editingId = id;
+  document.getElementById('modalTitle').textContent = 'Edit Farmer';
+  document.getElementById('mId').value      = f.id;
+  document.getElementById('mName').value    = f.name;
+  document.getElementById('mVillage').value = f.village;
+  document.getElementById('mPhone').value   = f.phone;
+  document.getElementById('mBank').value    = f.bank;
+  document.getElementById('mIfsc').value    = f.ifsc;
+  document.getElementById('mPass').value    = f.pass;
+  document.getElementById('mStatus').value  = f.status;
+  document.getElementById('mId').readOnly   = true;
+  document.getElementById('modalAlert').className='alert';
+  document.getElementById('modalOverlay').classList.add('open');
+};
+
+document.getElementById('modalCancel').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
+
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+
+document.getElementById('modalSave').addEventListener('click', function(){
+  var id      = document.getElementById('mId').value.trim();
+  var name    = document.getElementById('mName').value.trim();
+  var village = document.getElementById('mVillage').value.trim();
+  var phone   = document.getElementById('mPhone').value.trim();
+  var bank    = document.getElementById('mBank').value.trim();
+  var ifsc    = document.getElementById('mIfsc').value.trim();
+  var pass    = document.getElementById('mPass').value.trim();
+  var status  = document.getElementById('mStatus').value;
+  if (!id||!name||!village||!phone||!pass) { showAlert('modalAlert','⚠ Please fill all required fields.','error'); return; }
+  if (!editingId) {
+    if (farmers.find(function(f){ return f.id===id; })) { showAlert('modalAlert','⚠ Member ID already exists.','error'); return; }
+    farmers.push({ id:id, name:name, village:village, phone:phone, bank:bank, ifsc:ifsc, pass:pass, status:status });
+  } else {
+    var f = farmers.find(function(x){ return x.id===editingId; });
+    if (f) { f.name=name; f.village=village; f.phone=phone; f.bank=bank; f.ifsc=ifsc; f.pass=pass; f.status=status; }
+  }
+  renderFarmersTable();
+  populateFarmerSelect();
+  closeModal();
+});
+</script>
+
+
+</body>
+</html>
