@@ -1,93 +1,64 @@
-const { MongoClient } = require('mongodb');
-
-let cachedClient = null;
-let cachedDb = null;
-
-async function getDb() {
-  const uri = process.env.MONGODB_URI;
-  if (!uri) throw new Error('MONGODB_URI environment variable is not configured.');
-
-  if (cachedClient && cachedDb) return cachedDb;
-
-  cachedClient = new MongoClient(uri);
-  await cachedClient.connect();
-  cachedDb = cachedClient.db(process.env.MONGODB_DB || 'digital_milk_dairy');
-  return cachedDb;
-}
-
-const DEFAULT_STATE = {
-  farmers: [
-    { id:'FM-001', name:'Ramesh Patel', village:'Khodiyar', phone:'9876543210', bank:'1234567890', ifsc:'SBIN0001234', pass:'1234', status:'Active' },
-    { id:'FM-002', name:'Sunita Verma', village:'Nandasan', phone:'9123456789', bank:'9876543210', ifsc:'HDFC0004321', pass:'abcd', status:'Active' },
-    { id:'FM-003', name:'Bharat Singh', village:'Unjha', phone:'9988776655', bank:'1122334455', ifsc:'ICIC0005678', pass:'pass3', status:'Active' }
-  ],
-  entries: [
-    { farmerId:'FM-001', date:'2025-06-01', shift:'Morning', qty:12.5, fat:4.2, rate:32, amount:400, status:'Paid' },
-    { farmerId:'FM-001', date:'2025-06-01', shift:'Evening', qty:10.0, fat:4.0, rate:32, amount:320, status:'Paid' },
-    { farmerId:'FM-002', date:'2025-06-01', shift:'Morning', qty:8.0, fat:3.8, rate:32, amount:256, status:'Pending' },
-    { farmerId:'FM-001', date:'2025-06-02', shift:'Morning', qty:13.0, fat:4.3, rate:32, amount:416, status:'Paid' },
-    { farmerId:'FM-003', date:'2025-06-02', shift:'Evening', qty:9.5, fat:4.1, rate:32, amount:304, status:'Pending' }
-  ],
-  currentRate: 32,
-  feedInventory: [
-    { id:1, name:'Cattle Pellets', unit:'kg', price:18, stock:200 },
-    { id:2, name:'Wheat Bran', unit:'kg', price:12, stock:150 },
-    { id:3, name:'Mineral Mix', unit:'kg', price:55, stock:50 },
-    { id:4, name:'Green Fodder', unit:'kg', price:4, stock:500 }
-  ],
-  invNextId: 5,
-  feedDeductions: [
-    { id:1, farmerId:'FM-001', date:'2025-06-01', item:'Cattle Pellets', qty:25, unitPrice:18, amount:450 },
-    { id:2, farmerId:'FM-002', date:'2025-06-02', item:'Mineral Mix', qty:2, unitPrice:55, amount:110 }
-  ],
-  feedNextId: 3
-};
-
-module.exports = async function handler(req, res) {
-  res.setHeader('Cache-Control', 'no-store');
-
-  try {
-    const db = await getDb();
-    const collection = db.collection('application_state');
-
-    if (req.method === 'GET') {
-      let doc = await collection.findOne({ _id: 'milk-dairy-state' });
-
-      if (!doc) {
-        await collection.insertOne({ _id: 'milk-dairy-state', ...DEFAULT_STATE, updatedAt: new Date() });
-        doc = await collection.findOne({ _id: 'milk-dairy-state' });
+const {ObjectId}=require('mongodb');
+const {db,ensureIndexes}=require('./_db');
+const {getUser}=require('./_auth');
+const {hashPassword}=require('./_security');
+function send(res,status,data){res.status(status).json(data)}
+function oid(id){try{return new ObjectId(id)}catch{return null}}
+module.exports=async(req,res)=>{
+  const user=getUser(req); if(!user) return send(res,401,{error:'Please log in again'});
+  try{
+    const database=await db(); await ensureIndexes(database);
+    if(user.role==='developer') return send(res,403,{error:'Developer uses the company management API'});
+    const companyId=user.companyId;
+    if(!companyId || !oid(companyId)) return send(res,400,{error:'Invalid company session'});
+    const settings=await database.collection('settings').findOne({companyId})||{companyId,milkRate:45};
+    if(req.method==='GET'){
+      if(user.role==='company'){
+        const [farmers,milkEntries,feedEntries]=await Promise.all([
+          database.collection('farmers').find({companyId}).project({passwordHash:0}).sort({memberId:1}).toArray(),
+          database.collection('milkEntries').find({companyId}).sort({date:-1}).limit(1000).toArray(),
+          database.collection('feedEntries').find({companyId}).sort({date:-1}).limit(1000).toArray()
+        ]);
+        const company=await database.collection('companies').findOne({_id:oid(companyId)},{projection:{adminPasswordHash:0}});
+        return send(res,200,{company:{id:companyId,name:company?.name,code:company?.code},settings,farmers,milkEntries,feedEntries});
       }
-
-      delete doc._id;
-      delete doc.updatedAt;
-      return res.status(200).json(doc);
+      const farmer=await database.collection('farmers').findOne({companyId,memberId:user.memberId},{projection:{passwordHash:0}});
+      const [milkEntries,feedEntries]=await Promise.all([
+        database.collection('milkEntries').find({companyId,memberId:user.memberId}).sort({date:-1}).toArray(),
+        database.collection('feedEntries').find({companyId,memberId:user.memberId}).sort({date:-1}).toArray()
+      ]);
+      return send(res,200,{company:await database.collection('companies').findOne({_id:oid(companyId)},{projection:{name:1,code:1}}),settings,farmers:farmer?[farmer]:[],milkEntries,feedEntries});
     }
-
-    if (req.method === 'PUT') {
-      const body = req.body || {};
-      const state = {
-        farmers: Array.isArray(body.farmers) ? body.farmers : [],
-        entries: Array.isArray(body.entries) ? body.entries : [],
-        currentRate: typeof body.currentRate === 'number' ? body.currentRate : 32,
-        feedInventory: Array.isArray(body.feedInventory) ? body.feedInventory : [],
-        invNextId: typeof body.invNextId === 'number' ? body.invNextId : 1,
-        feedDeductions: Array.isArray(body.feedDeductions) ? body.feedDeductions : [],
-        feedNextId: typeof body.feedNextId === 'number' ? body.feedNextId : 1
-      };
-
-      await collection.replaceOne(
-        { _id: 'milk-dairy-state' },
-        { _id: 'milk-dairy-state', ...state, updatedAt: new Date() },
-        { upsert: true }
-      );
-
-      return res.status(200).json({ success: true, message: 'Data saved to MongoDB.' });
+    if(req.method!=='PUT') return send(res,405,{error:'Method not allowed'});
+    if(user.role!=='company') return send(res,403,{error:'Company admin access required'});
+    const body=req.body||{};
+    if(body.settings){await database.collection('settings').updateOne({companyId},{$set:{companyId,milkRate:Number(body.settings.milkRate)||0}},{upsert:true});}
+    if(Array.isArray(body.farmers)){
+      for(const f of body.farmers){
+        const memberId=String(f.memberId||'').trim().toUpperCase();
+        if(!memberId||!f.name||!f.password) continue;
+        const clean={companyId,memberId,name:String(f.name).trim(),phone:String(f.phone||''),village:String(f.village||''),status:f.status||'Active',passwordHash:hashPassword(f.password)};
+        await database.collection('farmers').updateOne({companyId,memberId},{$set:clean},{upsert:true});
+      }
     }
-
-    res.setHeader('Allow', 'GET, PUT');
-    return res.status(405).json({ error: 'Method not allowed.' });
-  } catch (error) {
-    console.error('MongoDB API error:', error);
-    return res.status(500).json({ error: 'Database error.', message: error.message });
-  }
+    if(Array.isArray(body.milkEntries)){
+      for(const e of body.milkEntries){
+        const memberId=String(e.memberId||'').trim().toUpperCase(), quantity=Number(e.quantity)||0;
+        if(!memberId||!quantity) continue;
+        const farmer=await database.collection('farmers').findOne({companyId,memberId}); if(!farmer) return send(res,400,{error:`Farmer ${memberId} does not belong to this company`});
+        const doc={companyId,memberId,date:String(e.date||new Date().toISOString().slice(0,10)),shift:e.shift||'Morning',quantity,fat:Number(e.fat)||0,rate:Number(e.rate)||Number(settings.milkRate)||0,amount:Number(e.amount)||quantity*(Number(e.rate)||Number(settings.milkRate)||0),status:e.status||'Pending'};
+        const id=oid(e._id); if(id) await database.collection('milkEntries').updateOne({_id:id,companyId},{$set:doc}); else await database.collection('milkEntries').insertOne(doc);
+      }
+    }
+    if(Array.isArray(body.feedEntries)){
+      for(const e of body.feedEntries){
+        const memberId=String(e.memberId||'').trim().toUpperCase(); if(!memberId||!e.item) continue;
+        const farmer=await database.collection('farmers').findOne({companyId,memberId}); if(!farmer) return send(res,400,{error:`Farmer ${memberId} does not belong to this company`});
+        const q=Number(e.quantity)||0,p=Number(e.unitPrice)||0;
+        const doc={companyId,memberId,date:String(e.date||new Date().toISOString().slice(0,10)),item:String(e.item),quantity:q,unitPrice:p,total:Number(e.total)||q*p};
+        const id=oid(e._id); if(id) await database.collection('feedEntries').updateOne({_id:id,companyId},{$set:doc}); else await database.collection('feedEntries').insertOne(doc);
+      }
+    }
+    return module.exports(Object.assign(req,{method:'GET'}),res);
+  }catch(e){console.error(e);return send(res,500,{error:e.message||'Database operation failed'});}
 };

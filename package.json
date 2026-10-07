@@ -1,9 +1,1 @@
-{
-  "name": "digital-milk-dairy-vercel-mongodb",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Digital Milk Dairy with Vercel API and MongoDB persistence",
-  "dependencies": {
-    "mongodb": "^6.20.0"
-  }
-}
+{"name":"smart-milk-dairy-management-system","version":"3.0.0","private":true,"dependencies":{"mongodb":"^6.18.0"}}
