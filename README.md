@@ -1,34 +1,34 @@
-# Smart Milk Dairy Management System — Multi-Company Edition
+# Smart Milk Dairy Management System — Multi-Company
 
 ## Architecture
 Developer → Companies → Farmers
 
-- Developer creates multiple companies.
-- Each company has its own admin account.
-- Company admins can create and manage only their own farmers.
-- Farmers log in using Company Code + Member ID + password.
-- Milk collection, feed/deductions, rates and farmer records are stored in MongoDB.
-- Every company-owned document contains `companyId`, so data is isolated between companies.
-- No demo credentials or demo application data are included.
+All companies, farmers, milk collection, feed/deductions and settings are stored in MongoDB. Company data is isolated by `companyId`.
 
-## MongoDB / Vercel environment variables
-Set these in Vercel:
+## Vercel Environment Variables
+Set these in **Vercel → Project → Settings → Environment Variables** for Production, Preview and Development:
 
-- `MONGODB_URI`
-- `MONGODB_DB` (for example `digital_milk_dairy`)
-- `SESSION_SECRET` (long random secret)
-- `DEVELOPER_USERNAME`
-- `DEVELOPER_PASSWORD`
+- `MONGODB_URI` — your MongoDB Atlas connection string
+- `MONGODB_DB` — e.g. `smart_milk_dairy`
+- `SESSION_SECRET` — a long random secret
+- `DEVELOPER_USERNAME` — your developer username
+- `DEVELOPER_PASSWORD` — your developer password
 
-## Deploy
-1. Push this folder to a GitHub repository.
-2. Import the repository into Vercel.
-3. Add all five environment variables for Production.
-4. Deploy.
-5. Open `/api/health` to confirm MongoDB connectivity.
-6. Log in as Developer and create the first company.
-7. Log in as that Company Admin and add farmers.
-8. Farmers use the company's code to log in.
+Do not put real secrets in GitHub.
 
-## Important
-Do not put MongoDB credentials in `index.html`, JavaScript, or GitHub. Keep them only in Vercel environment variables.
+## Vercel Root Directory
+If this repository is imported directly, Root Directory must be `.` (the repository root), where `index.html`, `package.json`, `vercel.json`, and `api/` are located.
+
+## Test backend
+After deployment open:
+`https://YOUR-DOMAIN.vercel.app/api/health`
+
+A working deployment returns JSON with `ok: true` and the MongoDB database name.
+
+## Roles
+- Developer: creates and manages companies.
+- Company: manages only its own farmers, milk and feed records.
+- Farmer: sees only their own records.
+
+## Local development
+Install dependencies with `npm install`. Vercel serverless functions require the environment variables above.
