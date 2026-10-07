@@ -1,37 +1,2024 @@
 <!doctype html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Smart Milk Dairy Management System</title>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Smart Milk Dairy Management System</title>
+
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,system-ui,sans-serif;background:#f4f6f9;color:#172033}button,input,select{font:inherit}.nav{height:60px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:5}.brand{font-weight:800;font-size:18px;color:#2563eb}.nav button,.btn{border:1px solid #dbe2ea;background:#fff;border-radius:7px;padding:9px 15px;cursor:pointer;font-weight:700}.primary{background:#2563eb!important;color:#fff;border-color:#2563eb!important}.purple{background:#7c3aed!important;color:#fff;border-color:#7c3aed!important}.dark{background:#111827!important;color:#fff;border-color:#111827!important}.page{display:none}.page.active{display:block}.hero{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:white;text-align:center;padding:75px 20px}.hero h1{font-size:38px;margin:12px 0}.hero p{color:#dbeafe;max-width:650px;margin:0 auto 28px}.actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}.actions button{padding:12px 22px;border-radius:8px;border:0;font-weight:700;cursor:pointer}.content{max-width:1050px;margin:auto;padding:38px 20px}.features,.cards,.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px}.card,.box{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px;box-shadow:0 2px 7px #0000000d}.auth{min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center;padding:30px}.authbox{width:100%;max-width:430px;background:#fff;padding:35px;border-radius:14px;border:1px solid #e2e8f0;box-shadow:0 8px 25px #00000012}.authbox h2{text-align:center;margin:5px 0}.sub{text-align:center;color:#718096;font-size:13px;margin-bottom:25px}.group{margin-bottom:16px}.group label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}.group input,.group select{width:100%;padding:11px;border:1px solid #dbe2ea;border-radius:7px}.alert{display:none;padding:10px;border-radius:7px;margin-bottom:15px;font-size:13px}.alert.show{display:block}.error{background:#fef2f2;color:#b91c1c}.success{background:#f0fdf4;color:#15803d}.link{text-align:center;color:#2563eb;cursor:pointer;font-size:13px;margin-top:18px}.dash{max-width:1150px;margin:auto;padding:28px 20px}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px;flex-wrap:wrap}.stat strong{font-size:26px;color:#2563eb;display:block}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.tablewrap{overflow:auto}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:10px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:13px;white-space:nowrap}.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.formgrid .full{grid-column:1/-1}.section{margin-bottom:20px}.muted{color:#718096;font-size:13px}.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#eef2ff;color:#4338ca;font-size:11px;font-weight:700}.danger{color:#b91c1c}.small{font-size:12px}.company-code{font-size:28px;font-weight:800;letter-spacing:2px;color:#7c3aed}.empty{text-align:center;padding:30px;color:#718096}@media(max-width:600px){.hero h1{font-size:28px}.formgrid{grid-template-columns:1fr}.formgrid .full{grid-column:auto}.nav{padding:0 14px}.nav button{padding:7px 9px}}
-</style></head><body>
-<nav class="nav"><div class="brand">🥛 MilkDairy</div><div id="navActions"><button onclick="show('farmerLogin')">🌾 Farmer</button> <button class="purple" onclick="show('companyLogin')">🏢 Company</button> <button class="dark" onclick="show('developerLogin')">🛠 Developer</button></div></nav>
-<section id="home" class="page active"><div class="hero"><div>Multi-Company Digital Dairy Platform</div><h1>Smart Milk Dairy<br>Management System</h1><p>One platform for the application developer, multiple dairy companies, and their farmers—with company-isolated backend data.</p><div class="actions"><button onclick="show('farmerLogin')">🌾 Farmer Login</button><button onclick="show('companyLogin')">🏢 Company Login</button><button onclick="show('developerLogin')">🛠 Developer Login</button></div></div><div class="content"><h2>How the platform works</h2><div class="features"><div class="card">🛠 <b>Developer</b><p class="muted">Creates and manages multiple dairy companies.</p></div><div class="card">🏢 <b>Company</b><p class="muted">Each company manages only its own farmers and dairy data.</p></div><div class="card">🌾 <b>Farmers</b><p class="muted">Farmers log in through their company code and member ID.</p></div><div class="card">☁️ <b>Backend Storage</b><p class="muted">Companies, farmers, milk and feed records are stored in MongoDB.</p></div></div></div></section>
-<section id="developerLogin" class="page"><div class="auth"><div class="authbox"><h2>🛠 Developer Login</h2><p class="sub">Application owner / platform developer.</p><div id="developerAlert" class="alert"></div><div class="group"><label>Developer Username</label><input id="dUser" autocomplete="username"></div><div class="group"><label>Password</label><input id="dPass" type="password" autocomplete="current-password"></div><button class="btn dark" style="width:100%" onclick="loginDeveloper()">Login →</button><div class="link" onclick="show('home')">← Back to home</div></div></div></section>
-<section id="companyLogin" class="page"><div class="auth"><div class="authbox"><h2>🏢 Company Login</h2><p class="sub">Authorized company administrator.</p><div id="companyAlert" class="alert"></div><div class="group"><label>Admin Username</label><input id="cUser" autocomplete="username"></div><div class="group"><label>Password</label><input id="cPass" type="password" autocomplete="current-password"></div><button class="btn purple" style="width:100%" onclick="loginCompany()">Login →</button><div class="link" onclick="show('home')">← Back to home</div></div></div></section>
-<section id="farmerLogin" class="page"><div class="auth"><div class="authbox"><h2>🌾 Farmer Login</h2><p class="sub">Use the company code given by your dairy company.</p><div id="farmerAlert" class="alert"></div><div class="group"><label>Company Code</label><input id="fCompany" placeholder="Example: ABCDAIRY" autocomplete="organization"></div><div class="group"><label>Member ID</label><input id="fUser" autocomplete="username"></div><div class="group"><label>Password</label><input id="fPass" type="password" autocomplete="current-password"></div><button class="btn primary" style="width:100%" onclick="loginFarmer()">Login →</button><div class="link" onclick="show('companyLogin')">Login as Company</div></div></div></section>
-<section id="developerDash" class="page"><div class="dash"><div class="top"><div><h2>🛠 Developer Dashboard</h2><div class="muted">Create and manage multiple dairy companies.</div></div><button class="btn" onclick="logout()">Logout</button></div><div id="developerContent"></div></div></section>
-<section id="companyDash" class="page"><div class="dash"><div class="top"><div><h2 id="companyTitle">🏢 Company Dashboard</h2><div class="muted" id="companyMeta"></div></div><button class="btn" onclick="logout()">Logout</button></div><div class="tabs"><button class="btn" onclick="companyTab('overview')">Overview</button><button class="btn" onclick="companyTab('farmers')">Farmers</button><button class="btn" onclick="companyTab('milk')">Milk Collection</button><button class="btn" onclick="companyTab('feed')">Feed</button></div><div id="companyContent"></div></div></section>
-<section id="farmerDash" class="page"><div class="dash"><div class="top"><div><h2 id="fName">Farmer</h2><div class="muted" id="fMeta"></div></div><button class="btn" onclick="logout()">Logout</button></div><div id="fStats" class="stats"></div><div class="box section"><h3>🥛 My Milk Records</h3><div class="tablewrap"><table class="table"><thead><tr><th>Date</th><th>Shift</th><th>Qty</th><th>Fat</th><th>Rate</th><th>Amount</th></tr></thead><tbody id="fMilk"></tbody></table></div></div><div class="box"><h3>🌿 Feed / Deductions</h3><div class="tablewrap"><table class="table"><thead><tr><th>Date</th><th>Item</th><th>Qty</th><th>Total</th></tr></thead><tbody id="fFeed"></tbody></table></div></div></div></section>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,system-ui,sans-serif;background:#f4f6f9;color:#172033}
+button,input,select{font:inherit}
+.nav{height:60px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:5}
+.brand{font-weight:800;font-size:18px;color:#2563eb}
+.nav button,.btn{border:1px solid #dbe2ea;background:#fff;border-radius:7px;padding:9px 15px;cursor:pointer;font-weight:700}
+.primary{background:#2563eb!important;color:#fff;border-color:#2563eb!important}
+.purple{background:#7c3aed!important;color:#fff;border-color:#7c3aed!important}
+.dark{background:#111827!important;color:#fff;border-color:#111827!important}
+.page{display:none}
+.page.active{display:block}
+.hero{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:white;text-align:center;padding:75px 20px}
+.hero h1{font-size:38px;margin:12px 0}
+.hero p{color:#dbeafe;max-width:650px;margin:0 auto 28px}
+.actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.actions button{padding:12px 22px;border-radius:8px;border:0;font-weight:700;cursor:pointer}
+.content{max-width:1050px;margin:auto;padding:38px 20px}
+.features,.cards,.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px}
+.card,.box{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px;box-shadow:0 2px 7px #0000000d}
+.auth{min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center;padding:30px}
+.authbox{width:100%;max-width:430px;background:#fff;padding:35px;border-radius:14px;border:1px solid #e2e8f0;box-shadow:0 8px 25px #00000012}
+.authbox h2{text-align:center;margin:5px 0}
+.sub{text-align:center;color:#718096;font-size:13px;margin-bottom:25px}
+.group{margin-bottom:16px}
+.group label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+.group input,.group select{width:100%;padding:11px;border:1px solid #dbe2ea;border-radius:7px}
+.alert{display:none;padding:10px;border-radius:7px;margin-bottom:15px;font-size:13px}
+.alert.show{display:block}
+.error{background:#fef2f2;color:#b91c1c}
+.success{background:#f0fdf4;color:#15803d}
+.link{text-align:center;color:#2563eb;cursor:pointer;font-size:13px;margin-top:18px}
+.dash{max-width:1150px;margin:auto;padding:28px 20px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px;flex-wrap:wrap}
+.stat strong{font-size:26px;color:#2563eb;display:block}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.tablewrap{overflow:auto}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{padding:10px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:13px;white-space:nowrap}
+.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.formgrid .full{grid-column:1/-1}
+.section{margin-bottom:20px}
+.muted{color:#718096;font-size:13px}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#eef2ff;color:#4338ca;font-size:11px;font-weight:700}
+.danger{color:#b91c1c}
+.small{font-size:12px}
+.company-code{font-size:28px;font-weight:800;letter-spacing:2px;color:#7c3aed}
+.empty{text-align:center;padding:30px;color:#718096}
+
+@media(max-width:600px){
+.hero h1{font-size:28px}
+.formgrid{grid-template-columns:1fr}
+.formgrid .full{grid-column:auto}
+.nav{padding:0 14px}
+.nav button{padding:7px 9px}
+}
+</style>
+</head>
+
+<body>
+
+<nav class="nav">
+<div class="brand">🥛 MilkDairy</div>
+
+<div id="navActions">
+<button onclick="show('farmerLogin')">🌾 Farmer</button>
+<button class="purple" onclick="show('companyLogin')">🏢 Company</button>
+<button class="dark" onclick="show('developerLogin')">🛠 Developer</button>
+</div>
+</nav>
+
+<section id="home" class="page active">
+
+<div class="hero">
+<div>Multi-Company Digital Dairy Platform</div>
+
+<h1>
+Smart Milk Dairy<br>
+Management System
+</h1>
+
+<p>
+One platform for the application developer, multiple dairy companies,
+and their farmers—with company-isolated backend data.
+</p>
+
+<div class="actions">
+<button onclick="show('farmerLogin')">🌾 Farmer Login</button>
+<button onclick="show('companyLogin')">🏢 Company Login</button>
+<button onclick="show('developerLogin')">🛠 Developer Login</button>
+</div>
+</div>
+
+<div class="content">
+
+<h2>How the platform works</h2>
+
+<div class="features">
+
+<div class="card">
+🛠 <b>Developer</b>
+<p class="muted">Creates and manages multiple dairy companies.</p>
+</div>
+
+<div class="card">
+🏢 <b>Company</b>
+<p class="muted">Each company manages only its own farmers and dairy data.</p>
+</div>
+
+<div class="card">
+🌾 <b>Farmers</b>
+<p class="muted">Farmers log in through their company code and member ID.</p>
+</div>
+
+<div class="card">
+☁️ <b>Backend Storage</b>
+<p class="muted">Companies, farmers, milk and feed records are stored in MongoDB.</p>
+</div>
+
+</div>
+</div>
+</section>
+
+
+<!-- DEVELOPER LOGIN -->
+
+<section id="developerLogin" class="page">
+
+<div class="auth">
+
+<div class="authbox">
+
+<h2>🛠 Developer Login</h2>
+
+<p class="sub">
+Application owner / platform developer.
+</p>
+
+<div id="developerAlert" class="alert"></div>
+
+<div class="group">
+<label>Developer Username</label>
+<input id="dUser" autocomplete="username">
+</div>
+
+<div class="group">
+<label>Password</label>
+<input id="dPass" type="password" autocomplete="current-password">
+</div>
+
+<button
+class="btn dark"
+style="width:100%"
+onclick="loginDeveloper()">
+Login →
+</button>
+
+<div class="link" onclick="show('home')">
+← Back to home
+</div>
+
+</div>
+</div>
+</section>
+
+
+<!-- COMPANY LOGIN -->
+
+<section id="companyLogin" class="page">
+
+<div class="auth">
+
+<div class="authbox">
+
+<h2>🏢 Company Login</h2>
+
+<p class="sub">
+Authorized company administrator.
+</p>
+
+<div id="companyAlert" class="alert"></div>
+
+<div class="group">
+<label>Admin Username</label>
+<input id="cUser" autocomplete="username">
+</div>
+
+<div class="group">
+<label>Password</label>
+<input id="cPass" type="password" autocomplete="current-password">
+</div>
+
+<button
+class="btn purple"
+style="width:100%"
+onclick="loginCompany()">
+Login →
+</button>
+
+<div class="link" onclick="show('home')">
+← Back to home
+</div>
+
+</div>
+</div>
+</section>
+
+
+<!-- FARMER LOGIN -->
+
+<section id="farmerLogin" class="page">
+
+<div class="auth">
+
+<div class="authbox">
+
+<h2>🌾 Farmer Login</h2>
+
+<p class="sub">
+Use the company code given by your dairy company.
+</p>
+
+<div id="farmerAlert" class="alert"></div>
+
+<div class="group">
+<label>Company Code</label>
+<input
+id="fCompany"
+placeholder="Example: ABCDAIRY"
+autocomplete="organization">
+</div>
+
+<div class="group">
+<label>Member ID</label>
+<input id="fUser" autocomplete="username">
+</div>
+
+<div class="group">
+<label>Password</label>
+<input
+id="fPass"
+type="password"
+autocomplete="current-password">
+</div>
+
+<button
+class="btn primary"
+style="width:100%"
+onclick="loginFarmer()">
+Login →
+</button>
+
+<div class="link" onclick="show('companyLogin')">
+Login as Company
+</div>
+
+</div>
+</div>
+</section>
+
+
+<!-- DEVELOPER DASHBOARD -->
+
+<section id="developerDash" class="page">
+
+<div class="dash">
+
+<div class="top">
+
+<div>
+<h2>🛠 Developer Dashboard</h2>
+<div class="muted">
+Create and manage multiple dairy companies.
+</div>
+</div>
+
+<button class="btn" onclick="logout()">Logout</button>
+
+</div>
+
+<div id="developerContent"></div>
+
+</div>
+</section>
+
+
+<!-- COMPANY DASHBOARD -->
+
+<section id="companyDash" class="page">
+
+<div class="dash">
+
+<div class="top">
+
+<div>
+<h2 id="companyTitle">🏢 Company Dashboard</h2>
+<div class="muted" id="companyMeta"></div>
+</div>
+
+<button class="btn" onclick="logout()">Logout</button>
+
+</div>
+
+<div class="tabs">
+
+<button class="btn" onclick="companyTab('overview')">
+Overview
+</button>
+
+<button class="btn" onclick="companyTab('farmers')">
+Farmers
+</button>
+
+<button class="btn" onclick="companyTab('milk')">
+Milk Collection
+</button>
+
+<button class="btn" onclick="companyTab('feed')">
+Feed
+</button>
+
+</div>
+
+<div id="companyContent"></div>
+
+</div>
+</section>
+
+
+<!-- FARMER DASHBOARD -->
+
+<section id="farmerDash" class="page">
+
+<div class="dash">
+
+<div class="top">
+
+<div>
+<h2 id="fName">Farmer</h2>
+<div class="muted" id="fMeta"></div>
+</div>
+
+<button class="btn" onclick="logout()">Logout</button>
+
+</div>
+
+<div id="fStats" class="stats"></div>
+
+<div class="box section">
+
+<h3>🥛 My Milk Records</h3>
+
+<div class="tablewrap">
+
+<table class="table">
+
+<thead>
+<tr>
+<th>Date</th>
+<th>Shift</th>
+<th>Qty</th>
+<th>Fat</th>
+<th>Rate</th>
+<th>Amount</th>
+</tr>
+</thead>
+
+<tbody id="fMilk"></tbody>
+
+</table>
+
+</div>
+</div>
+
+
+<div class="box">
+
+<h3>🌿 Feed / Deductions</h3>
+
+<div class="tablewrap">
+
+<table class="table">
+
+<thead>
+<tr>
+<th>Date</th>
+<th>Item</th>
+<th>Qty</th>
+<th>Total</th>
+</tr>
+</thead>
+
+<tbody id="fFeed"></tbody>
+
+</table>
+
+</div>
+</div>
+
+</div>
+</section>
+
+
 <script>
-let token=localStorage.getItem('milk_token')||'',role=localStorage.getItem('milk_role')||'',state={settings:{milkRate:45},farmers:[],milkEntries:[],feedEntries:[],companies:[]};
-const $=id=>document.getElementById(id);function show(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$(id).classList.add('active')}
-function alertBox(id,msg,ok=false){const e=$(id);e.textContent=msg;e.className='alert show '+(ok?'success':'error')}
-async function api(path,opt={}){opt.headers={...(opt.headers||{}),'Content-Type':'application/json'};if(token)opt.headers.Authorization='Bearer '+token;const r=await fetch('/api/'+path,opt);const d=await r.json().catch(()=>({error:'Invalid server response'}));if(!r.ok)throw new Error(d.error||'Request failed');return d}
-async function login(type,username,password,alertId,companyCode=''){try{const d=await api('login',{method:'POST',body:JSON.stringify({type,username,password,companyCode})});token=d.token;role=d.role;localStorage.setItem('milk_token',token);localStorage.setItem('milk_role',role);if(role==='developer'){await loadCompanies();show('developerDash');renderDeveloper()}else{await loadState();if(role==='company'){show('companyDash');companyTab('overview')}else{show('farmerDash');renderFarmer(d.farmer)}}}catch(e){alertBox(alertId,e.message)}}
-function loginDeveloper(){login('developer',$('dUser').value.trim(),$('dPass').value,$('developerAlert'))}function loginCompany(){login('company',$('cUser').value.trim(),$('cPass').value,$('companyAlert'))}function loginFarmer(){login('farmer',$('fUser').value.trim(),$('fPass').value,$('farmerAlert'),$('fCompany').value.trim())}
-async function loadState(){state=await api('state')}async function loadCompanies(){state.companies=(await api('companies')).companies}
-function money(n){return '₹'+Number(n||0).toFixed(2)}
-function renderDeveloper(){const cs=state.companies||[];$('developerContent').innerHTML=`<div class="box section"><h3>➕ Create New Company</h3><p class="muted">The developer creates the company. The company administrator then creates and manages its farmers.</p><div id="devAlert" class="alert"></div><div class="formgrid"><div class="group"><label>Company Name</label><input id="coName" placeholder="Example Dairy Pvt. Ltd."></div><div class="group"><label>Company Code</label><input id="coCode" placeholder="Example: ABCDAIRY"></div><div class="group"><label>Company Admin Username</label><input id="coUser"></div><div class="group"><label>Company Admin Password</label><input id="coPass" type="password" minlength="6"></div><div><button class="btn dark" onclick="createCompany()">Create Company</button></div></div></div><div class="box"><h3>🏢 Companies (${cs.length})</h3>${cs.length?`<div class="tablewrap"><table class="table"><thead><tr><th>Company</th><th>Code</th><th>Admin Username</th><th>Status</th><th>Created</th></tr></thead><tbody>${cs.map(c=>`<tr><td><b>${esc(c.name)}</b></td><td><span class="company-code" style="font-size:16px">${esc(c.code)}</span></td><td>${esc(c.adminUsername)}</td><td><span class="badge">${esc(c.status)}</span></td><td>${new Date(c.createdAt).toLocaleDateString()}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">No companies created yet.</div>'}</div>`}
-async function createCompany(){try{const name=$('coName').value.trim(),code=$('coCode').value.trim(),adminUsername=$('coUser').value.trim(),adminPassword=$('coPass').value;if(!name||!code||!adminUsername||!adminPassword)throw new Error('Fill all company fields');await api('companies',{method:'POST',body:JSON.stringify({name,code,adminUsername,adminPassword})});await loadCompanies();renderDeveloper();alertBox('devAlert','Company created successfully.',true)}catch(e){alertBox('devAlert',e.message)}}
-function companyTab(tab){const c=$('companyContent');if(tab==='overview'){const liters=state.milkEntries.reduce((a,x)=>a+Number(x.quantity||0),0),amt=state.milkEntries.reduce((a,x)=>a+Number(x.amount||0),0);c.innerHTML=`<div class="stats"><div class="card stat"><span class="muted">Farmers</span><strong>${state.farmers.length}</strong></div><div class="card stat"><span class="muted">Milk Collected</span><strong>${liters.toFixed(2)} L</strong></div><div class="card stat"><span class="muted">Milk Value</span><strong>${money(amt)}</strong></div><div class="card stat"><span class="muted">Milk Rate</span><strong>${money(state.settings.milkRate)}/L</strong></div></div><div class="box" style="margin-top:20px"><h3>⚙️ Company Settings</h3><div class="formgrid"><div class="group"><label>Milk Rate (₹/L)</label><input id="rate" type="number" step="0.01" value="${state.settings.milkRate}"></div><div><button class="btn purple" style="margin-top:24px" onclick="saveRate()">Save Rate</button></div></div></div>`}
-else if(tab==='farmers'){c.innerHTML=`<div class="box section"><h3>➕ Add Farmer</h3><div id="farmerAdminAlert" class="alert"></div><div class="formgrid"><div class="group"><label>Member ID</label><input id="nfId"></div><div class="group"><label>Name</label><input id="nfName"></div><div class="group"><label>Password</label><input id="nfPass" type="password"></div><div class="group"><label>Phone</label><input id="nfPhone"></div><div class="group"><label>Village</label><input id="nfVillage"></div><div><button class="btn purple" style="margin-top:24px" onclick="addFarmer()">Add Farmer</button></div></div></div><div class="box"><h3>🌾 Farmers (${state.farmers.length})</h3><div class="tablewrap"><table class="table"><thead><tr><th>Member ID</th><th>Name</th><th>Phone</th><th>Village</th><th>Status</th></tr></thead><tbody>${state.farmers.map(f=>`<tr><td>${esc(f.memberId)}</td><td>${esc(f.name)}</td><td>${esc(f.phone)}</td><td>${esc(f.village)}</td><td>${esc(f.status)}</td></tr>`).join('')||'<tr><td colspan="5">No farmers yet.</td></tr>'}</tbody></table></div></div>`}
-else if(tab==='milk'){c.innerHTML=`<div class="box"><h3>🥛 Add Milk Collection</h3><div id="milkAdminAlert" class="alert"></div><div class="formgrid"><div class="group"><label>Farmer</label><select id="mFarmer">${state.farmers.map(f=>`<option value="${esc(f.memberId)}">${esc(f.memberId)} - ${esc(f.name)}</option>`).join('')}</select></div><div class="group"><label>Date</label><input id="mDate" type="date" value="${new Date().toISOString().slice(0,10)}"></div><div class="group"><label>Shift</label><select id="mShift"><option>Morning</option><option>Evening</option></select></div><div class="group"><label>Quantity (L)</label><input id="mQty" type="number" step="0.01"></div><div class="group"><label>Fat %</label><input id="mFat" type="number" step="0.1"></div><div><button class="btn purple" style="margin-top:24px" onclick="addMilk()">Save Milk Entry</button></div></div></div><div class="box" style="margin-top:20px"><h3>Recent Entries</h3><div class="tablewrap"><table class="table"><thead><tr><th>Date</th><th>Farmer</th><th>Shift</th><th>Qty</th><th>Amount</th></tr></thead><tbody>${state.milkEntries.slice(0,50).map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.memberId)}</td><td>${esc(x.shift)}</td><td>${x.quantity} L</td><td>${money(x.amount)}</td></tr>`).join('')||'<tr><td colspan="5">No milk entries.</td></tr>'}</tbody></table></div></div>`}
-else{c.innerHTML=`<div class="box"><h3>🌿 Add Feed / Deduction</h3><div id="feedAdminAlert" class="alert"></div><div class="formgrid"><div class="group"><label>Farmer</label><select id="dFarmer">${state.farmers.map(f=>`<option value="${esc(f.memberId)}">${esc(f.memberId)} - ${esc(f.name)}</option>`).join('')}</select></div><div class="group"><label>Date</label><input id="dDate" type="date" value="${new Date().toISOString().slice(0,10)}"></div><div class="group"><label>Item</label><input id="dItem"></div><div class="group"><label>Quantity</label><input id="dQty" type="number" step="0.01"></div><div class="group"><label>Unit Price (₹)</label><input id="dPrice" type="number" step="0.01"></div><div><button class="btn purple" style="margin-top:24px" onclick="addFeed()">Save Deduction</button></div></div></div>`}}
-async function saveRate(){try{await api('state',{method:'PUT',body:JSON.stringify({settings:{milkRate:Number($('rate').value)}})});await loadState();companyTab('overview')}catch(e){alert(e.message)}}
-async function addFarmer(){try{const farmer={memberId:$('nfId').value.trim(),name:$('nfName').value.trim(),password:$('nfPass').value,phone:$('nfPhone').value,village:$('nfVillage').value,status:'Active'};if(!farmer.memberId||!farmer.name||!farmer.password)throw new Error('Member ID, name and password are required');await api('state',{method:'PUT',body:JSON.stringify({farmers:[farmer]})});await loadState();companyTab('farmers')}catch(e){if($('farmerAdminAlert'))alertBox('farmerAdminAlert',e.message)}}
-async function addMilk(){try{const q=Number($('mQty').value);if(!q)throw new Error('Enter quantity');const rate=Number(state.settings.milkRate)||0,e={memberId:$('mFarmer').value,date:$('mDate').value,shift:$('mShift').value,quantity:q,fat:Number($('mFat').value)||0,rate,amount:q*rate,status:'Pending'};await api('state',{method:'PUT',body:JSON.stringify({milkEntries:[e]})});await loadState();companyTab('milk')}catch(e){if($('milkAdminAlert'))alertBox('milkAdminAlert',e.message)}}
-async function addFeed(){try{const q=Number($('dQty').value),p=Number($('dPrice').value),e={memberId:$('dFarmer').value,date:$('dDate').value,item:$('dItem').value,quantity:q,unitPrice:p,total:q*p};if(!e.item)throw new Error('Enter feed item');await api('state',{method:'PUT',body:JSON.stringify({feedEntries:[e]})});await loadState();companyTab('feed')}catch(e){if($('feedAdminAlert'))alertBox('feedAdminAlert',e.message)}}
-function renderFarmer(me){const f=state.farmers[0]||me,rows=state.milkEntries,feed=state.feedEntries;$('fName').textContent=f.name;$('fMeta').textContent=`${f.memberId} • ${state.company?.name||''} (${state.company?.code||''})`;const totalL=rows.reduce((a,x)=>a+Number(x.quantity||0),0),total=rows.reduce((a,x)=>a+Number(x.amount||0),0);$('fStats').innerHTML=`<div class="card stat"><span class="muted">Total Milk</span><strong>${totalL.toFixed(2)} L</strong></div><div class="card stat"><span class="muted">Milk Earnings</span><strong>${money(total)}</strong></div><div class="card stat"><span class="muted">Current Rate</span><strong>${money(state.settings.milkRate)}/L</strong></div>`;$('fMilk').innerHTML=rows.length?rows.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.shift)}</td><td>${x.quantity} L</td><td>${x.fat||'-'}%</td><td>${money(x.rate)}</td><td>${money(x.amount)}</td></tr>`).join(''):'<tr><td colspan="6">No milk records yet.</td></tr>';$('fFeed').innerHTML=feed.length?feed.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.item)}</td><td>${x.quantity}</td><td>${money(x.total)}</td></tr>`).join(''):'<tr><td colspan="4">No deductions yet.</td></tr>'}
-function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-function logout(){token='';role='';localStorage.removeItem('milk_token');localStorage.removeItem('milk_role');show('home')}
-if(token){(async()=>{try{if(role==='developer'){await loadCompanies();show('developerDash');renderDeveloper()}else{await loadState();if(role==='company'){show('companyDash');companyTab('overview')}else{show('farmerDash');renderFarmer(state.farmers[0])}}}catch(e){logout()}})()}
-</script></body></html>
+
+let token=localStorage.getItem('milk_token')||'';
+
+let role=localStorage.getItem('milk_role')||'';
+
+let state={
+settings:{milkRate:45},
+farmers:[],
+milkEntries:[],
+feedEntries:[],
+companies:[]
+};
+
+
+const $=id=>document.getElementById(id);
+
+
+function show(id){
+
+document
+.querySelectorAll('.page')
+.forEach(x=>x.classList.remove('active'));
+
+$(id).classList.add('active');
+
+}
+
+
+function alertBox(id,msg,ok=false){
+
+const e=$(id);
+
+if(!e)return;
+
+e.textContent=msg;
+
+e.className='alert show '+(ok?'success':'error');
+
+}
+
+
+/*
+==================================================
+CORRECTED API FUNCTION
+==================================================
+This checks the HTTP response.
+
+If username/password is wrong,
+the backend error message is displayed.
+*/
+
+async function api(path,opt={}){
+
+try{
+
+opt.headers={
+...(opt.headers||{}),
+'Content-Type':'application/json'
+};
+
+if(token){
+
+opt.headers.Authorization='Bearer '+token;
+
+}
+
+const r=await fetch('/api/'+path,opt);
+
+const d=await r.json().catch(()=>({
+error:'Invalid server response'
+}));
+
+/*
+IMPORTANT:
+fetch() does NOT automatically throw an error
+for HTTP 401/403/500.
+
+Therefore we manually check r.ok.
+*/
+
+if(!r.ok){
+
+throw new Error(
+d.error ||
+'Invalid username or password'
+);
+
+}
+
+return d;
+
+}catch(error){
+
+/*
+Network/server error
+*/
+
+if(error instanceof Error){
+
+throw error;
+
+}
+
+throw new Error(
+'Unable to connect to server'
+);
+
+}
+
+}
+
+
+/*
+==================================================
+LOGIN FUNCTION
+==================================================
+*/
+
+async function login(
+type,
+username,
+password,
+alertId,
+companyCode=''
+){
+
+/*
+Clear old error message
+*/
+
+const alertElement=$(alertId);
+
+if(alertElement){
+
+alertElement.className='alert';
+alertElement.textContent='';
+
+}
+
+
+/*
+Check empty fields before sending request
+*/
+
+if(!username){
+
+alertBox(
+alertId,
+'Please enter username.'
+);
+
+return;
+
+}
+
+if(!password){
+
+alertBox(
+alertId,
+'Please enter password.'
+);
+
+return;
+
+}
+
+
+try{
+
+/*
+Show temporary login message
+*/
+
+alertBox(
+alertId,
+'Checking login...',
+true
+);
+
+
+const d=await api(
+'login',
+{
+method:'POST',
+
+body:JSON.stringify({
+
+type:type,
+
+username:username,
+
+password:password,
+
+companyCode:companyCode
+
+})
+
+}
+);
+
+
+/*
+Make sure server actually returned token
+*/
+
+if(!d || !d.token){
+
+throw new Error(
+'Invalid username or password'
+);
+
+}
+
+
+/*
+Save login information
+*/
+
+token=d.token;
+
+role=d.role;
+
+localStorage.setItem(
+'milk_token',
+token
+);
+
+localStorage.setItem(
+'milk_role',
+role
+);
+
+
+/*
+Developer login
+*/
+
+if(role==='developer'){
+
+await loadCompanies();
+
+alertBox(
+alertId,
+'Login successful.',
+true
+);
+
+setTimeout(()=>{
+
+show('developerDash');
+
+renderDeveloper();
+
+},500);
+
+return;
+
+}
+
+
+/*
+Company / Farmer login
+*/
+
+await loadState();
+
+
+if(role==='company'){
+
+alertBox(
+alertId,
+'Login successful.',
+true
+);
+
+setTimeout(()=>{
+
+show('companyDash');
+
+companyTab('overview');
+
+},500);
+
+}
+
+else{
+
+alertBox(
+alertId,
+'Login successful.',
+true
+);
+
+setTimeout(()=>{
+
+show('farmerDash');
+
+renderFarmer(d.farmer);
+
+},500);
+
+}
+
+}catch(e){
+
+/*
+==================================================
+IMPORTANT FIX
+==================================================
+This displays:
+"Invalid developer credentials"
+or
+"Invalid company login"
+or
+"Invalid Member ID or password"
+from your backend.
+*/
+
+console.error('Login error:',e);
+
+
+/*
+Remove any old login token
+*/
+
+token='';
+
+role='';
+
+localStorage.removeItem('milk_token');
+
+localStorage.removeItem('milk_role');
+
+
+/*
+Show error message on the login page
+*/
+
+alertBox(
+alertId,
+e.message || 'Invalid username or password'
+);
+
+}
+
+}
+
+
+/*
+LOGIN BUTTONS
+*/
+
+function loginDeveloper(){
+
+login(
+'developer',
+$('dUser').value.trim(),
+$('dPass').value,
+'developerAlert'
+);
+
+}
+
+
+function loginCompany(){
+
+login(
+'company',
+$('cUser').value.trim(),
+$('cPass').value,
+'companyAlert'
+);
+
+}
+
+
+function loginFarmer(){
+
+login(
+'farmer',
+$('fUser').value.trim(),
+$('fPass').value,
+'farmerAlert',
+$('fCompany').value.trim()
+);
+
+}
+
+
+/*
+LOAD DATA
+*/
+
+async function loadState(){
+
+state=await api('state');
+
+}
+
+
+async function loadCompanies(){
+
+state.companies=
+(await api('companies')).companies;
+
+}
+
+
+function money(n){
+
+return '₹'+Number(n||0).toFixed(2);
+
+}
+
+
+/*
+==================================================
+DEVELOPER DASHBOARD
+==================================================
+*/
+
+function renderDeveloper(){
+
+const cs=state.companies||[];
+
+$('developerContent').innerHTML=`
+
+<div class="box section">
+
+<h3>➕ Create New Company</h3>
+
+<p class="muted">
+The developer creates the company. The company administrator
+then creates and manages its farmers.
+</p>
+
+<div id="devAlert" class="alert"></div>
+
+<div class="formgrid">
+
+<div class="group">
+<label>Company Name</label>
+<input id="coName" placeholder="Example Dairy Pvt. Ltd.">
+</div>
+
+<div class="group">
+<label>Company Code</label>
+<input id="coCode" placeholder="Example: ABCDAIRY">
+</div>
+
+<div class="group">
+<label>Company Admin Username</label>
+<input id="coUser">
+</div>
+
+<div class="group">
+<label>Company Admin Password</label>
+<input id="coPass" type="password" minlength="6">
+</div>
+
+<div>
+<button class="btn dark" onclick="createCompany()">
+Create Company
+</button>
+</div>
+
+</div>
+</div>
+
+
+<div class="box">
+
+<h3>🏢 Companies (${cs.length})</h3>
+
+${
+cs.length
+?
+`
+<div class="tablewrap">
+
+<table class="table">
+
+<thead>
+
+<tr>
+<th>Company</th>
+<th>Code</th>
+<th>Admin Username</th>
+<th>Status</th>
+<th>Created</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+${cs.map(c=>`
+
+<tr>
+
+<td>
+<b>${esc(c.name)}</b>
+</td>
+
+<td>
+<span
+class="company-code"
+style="font-size:16px">
+${esc(c.code)}
+</span>
+</td>
+
+<td>
+${esc(c.adminUsername)}
+</td>
+
+<td>
+<span class="badge">
+${esc(c.status)}
+</span>
+</td>
+
+<td>
+${new Date(c.createdAt).toLocaleDateString()}
+</td>
+
+</tr>
+
+`).join('')}
+
+</tbody>
+
+</table>
+
+</div>
+`
+:
+'<div class="empty">No companies created yet.</div>'
+}
+
+</div>
+
+`;
+
+}
+
+
+/*
+CREATE COMPANY
+*/
+
+async function createCompany(){
+
+try{
+
+const name=$('coName').value.trim();
+
+const code=$('coCode').value.trim();
+
+const adminUsername=$('coUser').value.trim();
+
+const adminPassword=$('coPass').value;
+
+
+if(!name||!code||!adminUsername||!adminPassword){
+
+throw new Error(
+'Fill all company fields'
+);
+
+}
+
+
+await api(
+'companies',
+{
+method:'POST',
+
+body:JSON.stringify({
+
+name,
+code,
+adminUsername,
+adminPassword
+
+})
+
+}
+);
+
+
+await loadCompanies();
+
+renderDeveloper();
+
+alertBox(
+'devAlert',
+'Company created successfully.',
+true
+);
+
+
+}catch(e){
+
+alertBox(
+'devAlert',
+e.message
+);
+
+}
+
+}
+
+
+/*
+==================================================
+COMPANY DASHBOARD
+==================================================
+*/
+
+function companyTab(tab){
+
+const c=$('companyContent');
+
+
+if(tab==='overview'){
+
+const liters=
+state.milkEntries.reduce(
+(a,x)=>a+Number(x.quantity||0),
+0
+);
+
+const amt=
+state.milkEntries.reduce(
+(a,x)=>a+Number(x.amount||0),
+0
+);
+
+
+c.innerHTML=`
+
+<div class="stats">
+
+<div class="card stat">
+
+<span class="muted">
+Farmers
+</span>
+
+<strong>
+${state.farmers.length}
+</strong>
+
+</div>
+
+
+<div class="card stat">
+
+<span class="muted">
+Milk Collected
+</span>
+
+<strong>
+${liters.toFixed(2)} L
+</strong>
+
+</div>
+
+
+<div class="card stat">
+
+<span class="muted">
+Milk Value
+</span>
+
+<strong>
+${money(amt)}
+</strong>
+
+</div>
+
+
+<div class="card stat">
+
+<span class="muted">
+Milk Rate
+</span>
+
+<strong>
+${money(state.settings.milkRate)}/L
+</strong>
+
+</div>
+
+</div>
+
+
+<div
+class="box"
+style="margin-top:20px">
+
+<h3>
+⚙️ Company Settings
+</h3>
+
+<div class="formgrid">
+
+<div class="group">
+
+<label>
+Milk Rate (₹/L)
+</label>
+
+<input
+id="rate"
+type="number"
+step="0.01"
+value="${state.settings.milkRate}">
+
+</div>
+
+<div>
+
+<button
+class="btn purple"
+style="margin-top:24px"
+onclick="saveRate()">
+
+Save Rate
+
+</button>
+
+</div>
+
+</div>
+</div>
+
+`;
+
+}
+
+
+else if(tab==='farmers'){
+
+c.innerHTML=`
+
+<div class="box section">
+
+<h3>➕ Add Farmer</h3>
+
+<div id="farmerAdminAlert" class="alert"></div>
+
+<div class="formgrid">
+
+<div class="group">
+<label>Member ID</label>
+<input id="nfId">
+</div>
+
+<div class="group">
+<label>Name</label>
+<input id="nfName">
+</div>
+
+<div class="group">
+<label>Password</label>
+<input id="nfPass" type="password">
+</div>
+
+<div class="group">
+<label>Phone</label>
+<input id="nfPhone">
+</div>
+
+<div class="group">
+<label>Village</label>
+<input id="nfVillage">
+</div>
+
+<div>
+
+<button
+class="btn purple"
+style="margin-top:24px"
+onclick="addFarmer()">
+
+Add Farmer
+
+</button>
+
+</div>
+
+</div>
+</div>
+
+
+<div class="box">
+
+<h3>
+🌾 Farmers (${state.farmers.length})
+</h3>
+
+<div class="tablewrap">
+
+<table class="table">
+
+<thead>
+
+<tr>
+<th>Member ID</th>
+<th>Name</th>
+<th>Phone</th>
+<th>Village</th>
+<th>Status</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+${
+state.farmers.map(f=>`
+
+<tr>
+
+<td>${esc(f.memberId)}</td>
+
+<td>${esc(f.name)}</td>
+
+<td>${esc(f.phone)}</td>
+
+<td>${esc(f.village)}</td>
+
+<td>${esc(f.status)}</td>
+
+</tr>
+
+`).join('')
+||
+'<tr><td colspan="5">No farmers yet.</td></tr>'
+}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+
+else if(tab==='milk'){
+
+c.innerHTML=`
+
+<div class="box">
+
+<h3>🥛 Add Milk Collection</h3>
+
+<div id="milkAdminAlert" class="alert"></div>
+
+<div class="formgrid">
+
+<div class="group">
+
+<label>Farmer</label>
+
+<select id="mFarmer">
+
+${state.farmers.map(f=>`
+
+<option value="${esc(f.memberId)}">
+
+${esc(f.memberId)} - ${esc(f.name)}
+
+</option>
+
+`).join('')}
+
+</select>
+
+</div>
+
+
+<div class="group">
+
+<label>Date</label>
+
+<input
+id="mDate"
+type="date"
+value="${new Date().toISOString().slice(0,10)}">
+
+</div>
+
+
+<div class="group">
+
+<label>Shift</label>
+
+<select id="mShift">
+
+<option>Morning</option>
+<option>Evening</option>
+
+</select>
+
+</div>
+
+
+<div class="group">
+
+<label>Quantity (L)</label>
+
+<input
+id="mQty"
+type="number"
+step="0.01">
+
+</div>
+
+
+<div class="group">
+
+<label>Fat %</label>
+
+<input
+id="mFat"
+type="number"
+step="0.1">
+
+</div>
+
+
+<div>
+
+<button
+class="btn purple"
+style="margin-top:24px"
+onclick="addMilk()">
+
+Save Milk Entry
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div
+class="box"
+style="margin-top:20px">
+
+<h3>
+Recent Entries
+</h3>
+
+<div class="tablewrap">
+
+<table class="table">
+
+<thead>
+
+<tr>
+<th>Date</th>
+<th>Farmer</th>
+<th>Shift</th>
+<th>Qty</th>
+<th>Amount</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+${state.milkEntries.slice(0,50).map(x=>`
+
+<tr>
+
+<td>${esc(x.date)}</td>
+<td>${esc(x.memberId)}</td>
+<td>${esc(x.shift)}</td>
+<td>${x.quantity} L</td>
+<td>${money(x.amount)}</td>
+
+</tr>
+
+`).join('')
+||
+'<tr><td colspan="5">No milk entries.</td></tr>'
+}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+
+else{
+
+c.innerHTML=`
+
+<div class="box">
+
+<h3>
+🌿 Add Feed / Deduction
+</h3>
+
+<div id="feedAdminAlert" class="alert"></div>
+
+<div class="formgrid">
+
+<div class="group">
+
+<label>Farmer</label>
+
+<select id="dFarmer">
+
+${state.farmers.map(f=>`
+
+<option value="${esc(f.memberId)}">
+
+${esc(f.memberId)} - ${esc(f.name)}
+
+</option>
+
+`).join('')}
+
+</select>
+
+</div>
+
+
+<div class="group">
+
+<label>Date</label>
+
+<input
+id="dDate"
+type="date"
+value="${new Date().toISOString().slice(0,10)}">
+
+</div>
+
+
+<div class="group">
+
+<label>Item</label>
+
+<input id="dItem">
+
+</div>
+
+
+<div class="group">
+
+<label>Quantity</label>
+
+<input
+id="dQty"
+type="number"
+step="0.01">
+
+</div>
+
+
+<div class="group">
+
+<label>Unit Price (₹)</label>
+
+<input
+id="dPrice"
+type="number"
+step="0.01">
+
+</div>
+
+
+<div>
+
+<button
+class="btn purple"
+style="margin-top:24px"
+onclick="addFeed()">
+
+Save Deduction
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+}
+
+
+/*
+SAVE RATE
+*/
+
+async function saveRate(){
+
+try{
+
+await api(
+'state',
+{
+method:'PUT',
+body:JSON.stringify({
+
+settings:{
+milkRate:Number($('rate').value)
+}
+
+})
+}
+);
+
+await loadState();
+
+companyTab('overview');
+
+}catch(e){
+
+alert(e.message);
+
+}
+
+}
+
+
+/*
+ADD FARMER
+*/
+
+async function addFarmer(){
+
+try{
+
+const farmer={
+
+memberId:$('nfId').value.trim(),
+
+name:$('nfName').value.trim(),
+
+password:$('nfPass').value,
+
+phone:$('nfPhone').value,
+
+village:$('nfVillage').value,
+
+status:'Active'
+
+};
+
+
+if(
+!farmer.memberId||
+!farmer.name||
+!farmer.password
+){
+
+throw new Error(
+'Member ID, name and password are required'
+);
+
+}
+
+
+await api(
+'state',
+{
+method:'PUT',
+body:JSON.stringify({
+farmers:[farmer]
+})
+}
+);
+
+
+await loadState();
+
+companyTab('farmers');
+
+
+}catch(e){
+
+if($('farmerAdminAlert')){
+
+alertBox(
+'farmerAdminAlert',
+e.message
+);
+
+}
+
+}
+
+}
+
+
+/*
+ADD MILK
+*/
+
+async function addMilk(){
+
+try{
+
+const q=Number($('mQty').value);
+
+if(!q){
+
+throw new Error(
+'Enter quantity'
+);
+
+}
+
+
+const rate=
+Number(state.settings.milkRate)||0;
+
+
+const e={
+
+memberId:$('mFarmer').value,
+
+date:$('mDate').value,
+
+shift:$('mShift').value,
+
+quantity:q,
+
+fat:Number($('mFat').value)||0,
+
+rate,
+
+amount:q*rate,
+
+status:'Pending'
+
+};
+
+
+await api(
+'state',
+{
+method:'PUT',
+body:JSON.stringify({
+milkEntries:[e]
+})
+}
+);
+
+
+await loadState();
+
+companyTab('milk');
+
+
+}catch(e){
+
+if($('milkAdminAlert')){
+
+alertBox(
+'milkAdminAlert',
+e.message
+);
+
+}
+
+}
+
+}
+
+
+/*
+ADD FEED
+*/
+
+async function addFeed(){
+
+try{
+
+const q=Number($('dQty').value);
+
+const p=Number($('dPrice').value);
+
+
+const e={
+
+memberId:$('dFarmer').value,
+
+date:$('dDate').value,
+
+item:$('dItem').value,
+
+quantity:q,
+
+unitPrice:p,
+
+total:q*p
+
+};
+
+
+if(!e.item){
+
+throw new Error(
+'Enter feed item'
+);
+
+}
+
+
+await api(
+'state',
+{
+method:'PUT',
+body:JSON.stringify({
+feedEntries:[e]
+})
+}
+);
+
+
+await loadState();
+
+companyTab('feed');
+
+
+}catch(e){
+
+if($('feedAdminAlert')){
+
+alertBox(
+'feedAdminAlert',
+e.message
+);
+
+}
+
+}
+
+}
+
+
+/*
+==================================================
+FARMER DASHBOARD
+==================================================
+*/
+
+function renderFarmer(me){
+
+const f=
+state.farmers[0]||me;
+
+const rows=
+state.milkEntries;
+
+const feed=
+state.feedEntries;
+
+
+$('fName').textContent=
+f.name;
+
+
+$('fMeta').textContent=
+`${f.memberId} • ${state.company?.name||''} (${state.company?.code||''})`;
+
+
+const totalL=
+rows.reduce(
+(a,x)=>a+Number(x.quantity||0),
+0
+);
+
+
+const total=
+rows.reduce(
+(a,x)=>a+Number(x.amount||0),
+0
+);
+
+
+$('fStats').innerHTML=`
+
+<div class="card stat">
+
+<span class="muted">
+Total Milk
+</span>
+
+<strong>
+${totalL.toFixed(2)} L
+</strong>
+
+</div>
+
+
+<div class="card stat">
+
+<span class="muted">
+Milk Earnings
+</span>
+
+<strong>
+${money(total)}
+</strong>
+
+</div>
+
+
+<div class="card stat">
+
+<span class="muted">
+Current Rate
+</span>
+
+<strong>
+${money(state.settings.milkRate)}/L
+</strong>
+
+</div>
+
+`;
+
+
+$('fMilk').innerHTML=
+
+rows.length
+
+?
+
+rows.map(x=>`
+
+<tr>
+
+<td>${esc(x.date)}</td>
+
+<td>${esc(x.shift)}</td>
+
+<td>${x.quantity} L</td>
+
+<td>${x.fat||'-'}%</td>
+
+<td>${money(x.rate)}</td>
+
+<td>${money(x.amount)}</td>
+
+</tr>
+
+`).join('')
+
+:
+
+'<tr><td colspan="6">No milk records yet.</td></tr>';
+
+
+$('fFeed').innerHTML=
+
+feed.length
+
+?
+
+feed.map(x=>`
+
+<tr>
+
+<td>${esc(x.date)}</td>
+
+<td>${esc(x.item)}</td>
+
+<td>${x.quantity}</td>
+
+<td>${money(x.total)}</td>
+
+</tr>
+
+`).join('')
+
+:
+
+'<tr><td colspan="4">No deductions yet.</td></tr>';
+
+}
+
+
+/*
+ESCAPE HTML
+*/
+
+function esc(v){
+
+return String(v??'')
+.replace(
+/[&<>"']/g,
+m=>({
+
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#39;'
+
+}[m])
+);
+
+}
+
+
+/*
+LOGOUT
+*/
+
+function logout(){
+
+token='';
+
+role='';
+
+localStorage.removeItem('milk_token');
+
+localStorage.removeItem('milk_role');
+
+show('home');
+
+}
+
+
+/*
+AUTO LOGIN
+*/
+
+if(token){
+
+(async()=>{
+
+try{
+
+if(role==='developer'){
+
+await loadCompanies();
+
+show('developerDash');
+
+renderDeveloper();
+
+}
+
+else{
+
+await loadState();
+
+
+if(role==='company'){
+
+show('companyDash');
+
+companyTab('overview');
+
+}
+
+else{
+
+show('farmerDash');
+
+renderFarmer(
+state.farmers[0]
+);
+
+}
+
+}
+
+}catch(e){
+
+logout();
+
+}
+
+})();
+
+}
+
+</script>
+
+</body>
+</html>
