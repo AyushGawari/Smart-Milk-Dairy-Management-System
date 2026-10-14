@@ -1242,12 +1242,10 @@ status:'Pending'
 
 
 await api(
-'state',
+'milk',
 {
-method:'PUT',
-body:JSON.stringify({
-milkEntries:[e]
-})
+method:'POST',
+body:JSON.stringify(e)
 }
 );
 
@@ -1255,6 +1253,7 @@ milkEntries:[e]
 await loadState();
 
 companyTab('milk');
+alertBox('milkAdminAlert','Milk entry saved successfully to the backend.',true);
 
 
 }catch(e){
