@@ -13,7 +13,8 @@ async function ensureIndexes(database){
     database.collection('farmers').createIndex({companyId:1,memberId:1},{unique:true}),
     database.collection('milkEntries').createIndex({companyId:1,date:-1}),
     database.collection('feedEntries').createIndex({companyId:1,date:-1}),
-    database.collection('settings').createIndex({companyId:1},{unique:true})
+    database.collection('settings').createIndex({companyId:1},{unique:true}),
+    database.collection('feedInventory').createIndex({companyId:1,name:1},{unique:true})
   ]);
 }
 module.exports={db,ensureIndexes};

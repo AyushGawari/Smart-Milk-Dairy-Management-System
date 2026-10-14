@@ -24,7 +24,7 @@ button,input,select{font:inherit}
 .actions button{padding:12px 22px;border-radius:8px;border:0;font-weight:700;cursor:pointer}
 .content{max-width:1050px;margin:auto;padding:38px 20px}
 .features,.cards,.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px}
-.card,.box{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px;box-shadow:0 2px 7px #0000000d}
+.card,.box{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:20px;box-shadow:0 2px 7px #0000000d}.box h3{font-size:16px;margin-bottom:14px}.box.section{margin-bottom:20px}.stat strong{font-size:25px}
 .auth{min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center;padding:30px}
 .authbox{width:100%;max-width:430px;background:#fff;padding:35px;border-radius:14px;border:1px solid #e2e8f0;box-shadow:0 8px 25px #00000012}
 .authbox h2{text-align:center;margin:5px 0}
@@ -40,7 +40,7 @@ button,input,select{font:inherit}
 .dash{max-width:1150px;margin:auto;padding:28px 20px}
 .top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px;flex-wrap:wrap}
 .stat strong{font-size:26px;color:#2563eb;display:block}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.tabs{display:flex;gap:0;flex-wrap:wrap;margin-bottom:24px;border-bottom:2px solid #e2e8f0}.tabs .btn{border:0;border-radius:0;background:transparent;color:#718096;border-bottom:3px solid transparent;margin-bottom:-2px;padding:11px 14px}.tabs .btn:hover{color:#7c3aed;background:#f5f3ff;border-bottom-color:#c4b5fd}
 .tablewrap{overflow:auto}
 .table{width:100%;border-collapse:collapse}
 .table th,.table td{padding:10px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:13px;white-space:nowrap}
@@ -100,30 +100,21 @@ and their farmers—with company-isolated backend data.
 
 <div class="content">
 
-<h2>How the platform works</h2>
+<h2>Platform Features</h2>
 
 <div class="features">
-
-<div class="card">
-🛠 <b>Developer</b>
-<p class="muted">Creates and manages multiple dairy companies.</p>
+<div class="card">🥛 <b>Milk Collection</b><p class="muted">Record morning and evening milk quantity, fat and rates.</p></div>
+<div class="card">💰 <b>Payments</b><p class="muted">Calculate gross earnings, feed deductions and net payable.</p></div>
+<div class="card">📊 <b>Dashboard & Summary</b><p class="muted">Review farmer-wise collection and monthly payment reports.</p></div>
+<div class="card">🗂 <b>Feed Inventory</b><p class="muted">Manage feed types, unit prices, stock and farmer deductions.</p></div>
 </div>
 
-<div class="card">
-🏢 <b>Company</b>
-<p class="muted">Each company manages only its own farmers and dairy data.</p>
-</div>
-
-<div class="card">
-🌾 <b>Farmers</b>
-<p class="muted">Farmers log in through their company code and member ID.</p>
-</div>
-
-<div class="card">
-☁️ <b>Backend Storage</b>
-<p class="muted">Companies, farmers, milk and feed records are stored in MongoDB.</p>
-</div>
-
+<h2 style="margin:8px 0 15px">Multi-Company Access</h2>
+<div class="features">
+<div class="card">🛠 <b>Developer</b><p class="muted">Creates and manages multiple dairy companies.</p></div>
+<div class="card">🏢 <b>Company Admin</b><p class="muted">Manages only its own farmers and dairy records.</p></div>
+<div class="card">🌾 <b>Farmer Portal</b><p class="muted">Views personal milk records, feed deductions and earnings.</p></div>
+<div class="card">☁️ <b>MongoDB Backend</b><p class="muted">Saves company data in the online database.</p></div>
 </div>
 </div>
 </section>
@@ -297,11 +288,11 @@ Create and manage multiple dairy companies.
 
 <div class="dash">
 
-<div class="top">
+<div class="top" style="background:#7c3aed;color:#fff;padding:18px 22px;border-radius:10px;box-shadow:0 2px 7px #00000012">
 
 <div>
 <h2 id="companyTitle">🏢 Company Dashboard</h2>
-<div class="muted" id="companyMeta"></div>
+<div id="companyMeta" style="font-size:13px;opacity:.85"></div>
 </div>
 
 <button class="btn" onclick="logout()">Logout</button>
@@ -309,23 +300,13 @@ Create and manage multiple dairy companies.
 </div>
 
 <div class="tabs">
-
-<button class="btn" onclick="companyTab('overview')">
-Overview
-</button>
-
-<button class="btn" onclick="companyTab('farmers')">
-Farmers
-</button>
-
-<button class="btn" onclick="companyTab('milk')">
-Milk Collection
-</button>
-
-<button class="btn" onclick="companyTab('feed')">
-Feed
-</button>
-
+<button class="btn" onclick="companyTab('overview')">📊 Overview</button>
+<button class="btn" onclick="companyTab('farmers')">🌾 Farmers</button>
+<button class="btn" onclick="companyTab('milk')">🥛 Milk Entry</button>
+<button class="btn" onclick="companyTab('rates')">💰 Rates</button>
+<button class="btn" onclick="companyTab('inventory')">🗂 Feed Inventory</button>
+<button class="btn" onclick="companyTab('feed')">🌿 Feed / Deductions</button>
+<button class="btn" onclick="companyTab('summary')">📈 Summary</button>
 </div>
 
 <div id="companyContent"></div>
@@ -419,6 +400,7 @@ settings:{milkRate:45},
 farmers:[],
 milkEntries:[],
 feedEntries:[],
+feedInventory:[],
 companies:[]
 };
 
@@ -1030,501 +1012,86 @@ COMPANY DASHBOARD
 */
 
 function companyTab(tab){
-
 const c=$('companyContent');
-
-
+const today=new Date().toISOString().slice(0,10);
+const farmerOptions=state.farmers.map(f=>`<option value="${esc(f.memberId)}">${esc(f.memberId)} - ${esc(f.name)}</option>`).join('');
+const inventoryOptions=state.feedInventory.map(f=>`<option value="${esc(f.name)}">${esc(f.name)} (${money(f.price)}/${esc(f.unit)})</option>`).join('');
 if(tab==='overview'){
-
-const liters=
-state.milkEntries.reduce(
-(a,x)=>a+Number(x.quantity||0),
-0
-);
-
-const amt=
-state.milkEntries.reduce(
-(a,x)=>a+Number(x.amount||0),
-0
-);
-
-
-c.innerHTML=`
-
-<div class="stats">
-
-<div class="card stat">
-
-<span class="muted">
-Farmers
-</span>
-
-<strong>
-${state.farmers.length}
-</strong>
-
-</div>
-
-
-<div class="card stat">
-
-<span class="muted">
-Milk Collected
-</span>
-
-<strong>
-${liters.toFixed(2)} L
-</strong>
-
-</div>
-
-
-<div class="card stat">
-
-<span class="muted">
-Milk Value
-</span>
-
-<strong>
-${money(amt)}
-</strong>
-
-</div>
-
-
-<div class="card stat">
-
-<span class="muted">
-Milk Rate
-</span>
-
-<strong>
-${money(state.settings.milkRate)}/L
-</strong>
-
-</div>
-
-</div>
-
-
-<div
-class="box"
-style="margin-top:20px">
-
-<h3>
-⚙️ Company Settings
-</h3>
-
-<div class="formgrid">
-
-<div class="group">
-
-<label>
-Milk Rate (₹/L)
-</label>
-
-<input
-id="rate"
-type="number"
-step="0.01"
-value="${state.settings.milkRate}">
-
-</div>
-
-<div>
-
-<button
-class="btn purple"
-style="margin-top:24px"
-onclick="saveRate()">
-
-Save Rate
-
-</button>
-
-</div>
-
-</div>
-</div>
-
-`;
-
+ const liters=state.milkEntries.reduce((a,x)=>a+Number(x.quantity||0),0);
+ const gross=state.milkEntries.reduce((a,x)=>a+Number(x.amount||0),0);
+ const deductions=state.feedEntries.reduce((a,x)=>a+Number(x.total||0),0);
+ c.innerHTML=`<div class="stats">
+ <div class="card stat"><span class="muted">Registered Farmers</span><strong>${state.farmers.length}</strong></div>
+ <div class="card stat"><span class="muted">Milk Collected</span><strong>${liters.toFixed(2)} L</strong></div>
+ <div class="card stat"><span class="muted">Gross Milk Value</span><strong>${money(gross)}</strong></div>
+ <div class="card stat"><span class="muted">Feed Deductions</span><strong>${money(deductions)}</strong></div>
+ </div>
+ <div class="box section" style="margin-top:20px"><h3>🏢 ${esc(state.company?.name||'Company')} Dashboard</h3><p class="muted">Company Code: ${esc(state.company?.code||'')} · All records are stored in the connected MongoDB backend.</p><div class="formgrid" style="margin-top:18px"><div class="group"><label>Current Milk Rate (₹/L)</label><input id="rate" type="number" min="0" step=".01" value="${Number(state.settings.milkRate)||0}"></div><div><button class="btn purple" style="margin-top:25px" onclick="saveRate()">Update Rate</button></div></div></div>`;
 }
-
-
 else if(tab==='farmers'){
-
-c.innerHTML=`
-
-<div class="box section">
-
-<h3>➕ Add Farmer</h3>
-
-<div id="farmerAdminAlert" class="alert"></div>
-
-<div class="formgrid">
-
-<div class="group">
-<label>Member ID</label>
-<input id="nfId">
-</div>
-
-<div class="group">
-<label>Name</label>
-<input id="nfName">
-</div>
-
-<div class="group">
-<label>Password</label>
-<input id="nfPass" type="password">
-</div>
-
-<div class="group">
-<label>Phone</label>
-<input id="nfPhone">
-</div>
-
-<div class="group">
-<label>Village</label>
-<input id="nfVillage">
-</div>
-
-<div>
-
-<button
-class="btn purple"
-style="margin-top:24px"
-onclick="addFarmer()">
-
-Add Farmer
-
-</button>
-
-</div>
-
-</div>
-</div>
-
-
-<div class="box">
-
-<h3>
-🌾 Farmers (${state.farmers.length})
-</h3>
-
-<div class="tablewrap">
-
-<table class="table">
-
-<thead>
-
-<tr>
-<th>Member ID</th>
-<th>Name</th>
-<th>Phone</th>
-<th>Village</th>
-<th>Status</th>
-</tr>
-
-</thead>
-
-<tbody>
-
-${
-state.farmers.map(f=>`
-
-<tr>
-
-<td>${esc(f.memberId)}</td>
-
-<td>${esc(f.name)}</td>
-
-<td>${esc(f.phone)}</td>
-
-<td>${esc(f.village)}</td>
-
-<td>${esc(f.status)}</td>
-
-</tr>
-
-`).join('')
-||
-'<tr><td colspan="5">No farmers yet.</td></tr>'
+ c.innerHTML=`<div class="box section"><h3>➕ Add Farmer</h3><div id="farmerAdminAlert" class="alert"></div><div class="formgrid">
+ <div class="group"><label>Member ID *</label><input id="nfId"></div><div class="group"><label>Full Name *</label><input id="nfName"></div>
+ <div class="group"><label>Login Password *</label><input id="nfPass" type="password"></div><div class="group"><label>Phone</label><input id="nfPhone"></div>
+ <div class="group"><label>Village / Area</label><input id="nfVillage"></div><div><button class="btn purple" style="margin-top:25px" onclick="addFarmer()">Save Farmer</button></div></div></div>
+ <div class="box"><h3>🌾 Registered Farmers (${state.farmers.length})</h3><div class="tablewrap"><table class="table"><thead><tr><th>Member ID</th><th>Name</th><th>Village</th><th>Phone</th><th>Status</th></tr></thead><tbody>${state.farmers.map(f=>`<tr><td>${esc(f.memberId)}</td><td>${esc(f.name)}</td><td>${esc(f.village)}</td><td>${esc(f.phone)}</td><td>${esc(f.status||'Active')}</td></tr>`).join('')||'<tr><td colspan="5" class="empty">No farmers registered yet.</td></tr>'}</tbody></table></div></div>`;
 }
-
-</tbody>
-
-</table>
-
-</div>
-
-</div>
-
-`;
-
-}
-
-
 else if(tab==='milk'){
-
-c.innerHTML=`
-
-<div class="box">
-
-<h3>🥛 Add Milk Collection</h3>
-
-<div id="milkAdminAlert" class="alert"></div>
-
-<div class="formgrid">
-
-<div class="group">
-
-<label>Farmer</label>
-
-<select id="mFarmer">
-
-${state.farmers.map(f=>`
-
-<option value="${esc(f.memberId)}">
-
-${esc(f.memberId)} - ${esc(f.name)}
-
-</option>
-
-`).join('')}
-
-</select>
-
-</div>
-
-
-<div class="group">
-
-<label>Date</label>
-
-<input
-id="mDate"
-type="date"
-value="${new Date().toISOString().slice(0,10)}">
-
-</div>
-
-
-<div class="group">
-
-<label>Shift</label>
-
-<select id="mShift">
-
-<option>Morning</option>
-<option>Evening</option>
-
-</select>
-
-</div>
-
-
-<div class="group">
-
-<label>Quantity (L)</label>
-
-<input
-id="mQty"
-type="number"
-step="0.01">
-
-</div>
-
-
-<div class="group">
-
-<label>Fat %</label>
-
-<input
-id="mFat"
-type="number"
-step="0.1">
-
-</div>
-
-
-<div>
-
-<button
-class="btn purple"
-style="margin-top:24px"
-onclick="addMilk()">
-
-Save Milk Entry
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-
-<div
-class="box"
-style="margin-top:20px">
-
-<h3>
-Recent Entries
-</h3>
-
-<div class="tablewrap">
-
-<table class="table">
-
-<thead>
-
-<tr>
-<th>Date</th>
-<th>Farmer</th>
-<th>Shift</th>
-<th>Qty</th>
-<th>Amount</th>
-</tr>
-
-</thead>
-
-<tbody>
-
-${state.milkEntries.slice(0,50).map(x=>`
-
-<tr>
-
-<td>${esc(x.date)}</td>
-<td>${esc(x.memberId)}</td>
-<td>${esc(x.shift)}</td>
-<td>${x.quantity} L</td>
-<td>${money(x.amount)}</td>
-
-</tr>
-
-`).join('')
-||
-'<tr><td colspan="5">No milk entries.</td></tr>'
+ c.innerHTML=`<div class="box section"><h3>🥛 Add Milk Collection Entry</h3><div id="milkAdminAlert" class="alert"></div><div class="formgrid">
+ <div class="group"><label>Farmer</label><select id="mFarmer">${farmerOptions}</select></div><div class="group"><label>Date</label><input id="mDate" type="date" value="${today}"></div>
+ <div class="group"><label>Shift</label><select id="mShift"><option>Morning</option><option>Evening</option></select></div><div class="group"><label>Quantity (Liters)</label><input id="mQty" type="number" min="0" step=".01"></div>
+ <div class="group"><label>Fat %</label><input id="mFat" type="number" min="0" step=".1"></div><div class="group"><label>Rate (₹/L)</label><input id="mRate" type="number" min="0" step=".01" value="${Number(state.settings.milkRate)||0}"></div>
+ <div><button class="btn purple" style="margin-top:25px" onclick="addMilk()">Save Entry</button></div></div></div>
+ <div class="box"><h3>🥛 Recent Milk Entries</h3><div class="tablewrap"><table class="table"><thead><tr><th>Farmer</th><th>Date</th><th>Shift</th><th>Qty (L)</th><th>Fat %</th><th>Rate</th><th>Gross Amount</th></tr></thead><tbody>${state.milkEntries.map(x=>`<tr><td>${esc(x.memberId)}</td><td>${esc(x.date)}</td><td>${esc(x.shift)}</td><td>${Number(x.quantity||0).toFixed(2)}</td><td>${Number(x.fat||0)}</td><td>${money(x.rate)}</td><td>${money(x.amount)}</td></tr>`).join('')||'<tr><td colspan="7" class="empty">No milk entries yet.</td></tr>'}</tbody></table></div></div>`;
 }
-
-</tbody>
-
-</table>
-
-</div>
-
-</div>
-
-`;
-
+else if(tab==='rates'){
+ c.innerHTML=`<div class="box" style="max-width:650px"><h3>💰 Milk Rate Settings</h3><p class="muted">Set the current rate used for new milk entries.</p><div id="rateAlert" class="alert"></div><div class="formgrid" style="margin-top:18px"><div class="group"><label>Rate per Liter (₹)</label><input id="rate" type="number" min="0" step=".01" value="${Number(state.settings.milkRate)||0}"></div><div class="group"><label>Effective From</label><input id="rateDate" type="date" value="${today}"></div><div class="group full"><label>Reason / Notes</label><input id="rateNote" placeholder="Optional notes"></div><div><button class="btn purple" onclick="saveRate()">Update Rate</button></div></div></div>`;
 }
-
-
-else{
-
-c.innerHTML=`
-
-<div class="box">
-
-<h3>
-🌿 Add Feed / Deduction
-</h3>
-
-<div id="feedAdminAlert" class="alert"></div>
-
-<div class="formgrid">
-
-<div class="group">
-
-<label>Farmer</label>
-
-<select id="dFarmer">
-
-${state.farmers.map(f=>`
-
-<option value="${esc(f.memberId)}">
-
-${esc(f.memberId)} - ${esc(f.name)}
-
-</option>
-
-`).join('')}
-
-</select>
-
-</div>
-
-
-<div class="group">
-
-<label>Date</label>
-
-<input
-id="dDate"
-type="date"
-value="${new Date().toISOString().slice(0,10)}">
-
-</div>
-
-
-<div class="group">
-
-<label>Item</label>
-
-<input id="dItem">
-
-</div>
-
-
-<div class="group">
-
-<label>Quantity</label>
-
-<input
-id="dQty"
-type="number"
-step="0.01">
-
-</div>
-
-
-<div class="group">
-
-<label>Unit Price (₹)</label>
-
-<input
-id="dPrice"
-type="number"
-step="0.01">
-
-</div>
-
-
-<div>
-
-<button
-class="btn purple"
-style="margin-top:24px"
-onclick="addFeed()">
-
-Save Deduction
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-`;
-
+else if(tab==='inventory'){
+ c.innerHTML=`<div class="box section"><h3>🗂 Feed Inventory</h3><p class="muted">Manage feed types, price per unit and available stock. Stock is reduced when a feed deduction is saved.</p><div id="inventoryAlert" class="alert"></div><div class="formgrid" style="margin-top:16px">
+ <div class="group"><label>Feed Name *</label><input id="invName" placeholder="e.g. Cattle Pellets"></div><div class="group"><label>Unit</label><select id="invUnit"><option>kg</option><option>bag</option><option>litre</option><option>packet</option><option>piece</option></select></div>
+ <div class="group"><label>Price per Unit (₹) *</label><input id="invPrice" type="number" min="0" step=".01"></div><div class="group"><label>Stock Quantity</label><input id="invStock" type="number" min="0" step=".01" value="0"></div>
+ <div><button class="btn purple" onclick="saveInventoryItem()">Save Feed Type</button></div></div></div>
+ <div class="box"><h3>📦 Current Stock (${state.feedInventory.length} items)</h3><div class="tablewrap"><table class="table"><thead><tr><th>Feed Name</th><th>Unit</th><th>Price / Unit</th><th>Stock</th><th>Stock Value</th></tr></thead><tbody>${state.feedInventory.map(x=>`<tr><td><b>${esc(x.name)}</b></td><td>${esc(x.unit||'kg')}</td><td>${money(x.price)}</td><td>${Number(x.stock||0)}</td><td>${money(Number(x.stock||0)*Number(x.price||0))}</td></tr>`).join('')||'<tr><td colspan="5" class="empty">No feed inventory items yet. Add your first feed type above.</td></tr>'}</tbody></table></div></div>`;
 }
-
+else if(tab==='feed'){
+ c.innerHTML=`<div class="box section"><h3>🌿 Feed / Deductions</h3><p class="muted">Record feed issued to a farmer. The amount is included in the farmer's deductions and stock is updated in inventory.</p><div id="feedAdminAlert" class="alert"></div><div class="formgrid" style="margin-top:16px">
+ <div class="group"><label>Farmer</label><select id="dFarmer">${farmerOptions}</select></div><div class="group"><label>Date</label><input id="dDate" type="date" value="${today}"></div>
+ <div class="group"><label>Feed Item</label><select id="dItem" onchange="selectFeedPrice()"><option value="">— Select feed item —</option>${inventoryOptions}</select></div><div class="group"><label>Quantity / Units</label><input id="dQty" type="number" min=".01" step=".01" oninput="calcFeedTotal()"></div>
+ <div class="group"><label>Price per Unit (₹)</label><input id="dPrice" type="number" min="0" step=".01" oninput="calcFeedTotal()"></div><div class="group"><label>Total Amount (₹)</label><input id="dAmount" readonly></div>
+ <div><button class="btn purple" onclick="addFeed()">Save Deduction</button></div></div></div>
+ <div class="box"><h3>📋 Feed / Deduction Records</h3><div class="tablewrap"><table class="table"><thead><tr><th>Farmer</th><th>Date</th><th>Feed Item</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr></thead><tbody>${state.feedEntries.map(x=>`<tr><td>${esc(x.memberId)}</td><td>${esc(x.date)}</td><td>${esc(x.item)}</td><td>${Number(x.quantity||0)}</td><td>${money(x.unitPrice)}</td><td class="danger">${money(x.total)}</td></tr>`).join('')||'<tr><td colspan="6" class="empty">No feed deductions yet.</td></tr>'}</tbody></table></div></div>`;
 }
-
+else if(tab==='summary'){
+ const totalQty=state.milkEntries.reduce((a,x)=>a+Number(x.quantity||0),0);
+ const gross=state.milkEntries.reduce((a,x)=>a+Number(x.amount||0),0);
+ const totalDed=state.feedEntries.reduce((a,x)=>a+Number(x.total||0),0);
+ const rows=state.farmers.map(f=>{const ms=state.milkEntries.filter(x=>x.memberId===f.memberId);const ds=state.feedEntries.filter(x=>x.memberId===f.memberId);const qty=ms.reduce((a,x)=>a+Number(x.quantity||0),0);const amount=ms.reduce((a,x)=>a+Number(x.amount||0),0);const ded=ds.reduce((a,x)=>a+Number(x.total||0),0);return {f,qty,amount,ded,net:amount-ded};});
+ c.innerHTML=`<div class="stats"><div class="card stat"><span class="muted">Total Milk</span><strong>${totalQty.toFixed(2)} L</strong></div><div class="card stat"><span class="muted">Gross Amount</span><strong>${money(gross)}</strong></div><div class="card stat"><span class="muted">Feed Deductions</span><strong>${money(totalDed)}</strong></div><div class="card stat"><span class="muted">Net Payable</span><strong>${money(gross-totalDed)}</strong></div></div>
+ <div class="box section" style="margin-top:20px"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><h3>📊 Farmer-wise Payment Summary</h3><button class="btn" onclick="exportSummary()">⬇ Download CSV</button></div><div class="tablewrap"><table class="table"><thead><tr><th>Member ID</th><th>Farmer Name</th><th>Total Qty (L)</th><th>Gross Amount</th><th>Feed Deduction</th><th>Net Payable</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.f.memberId)}</td><td>${esc(r.f.name)}</td><td>${r.qty.toFixed(2)}</td><td>${money(r.amount)}</td><td class="danger">${money(r.ded)}</td><td><b>${money(r.net)}</b></td></tr>`).join('')||'<tr><td colspan="6" class="empty">No summary data yet.</td></tr>'}</tbody></table></div></div>`;
+}
+}
+function selectFeedPrice(){
+ const item=state.feedInventory.find(x=>x.name===$('dItem')?.value);
+ if(item){$('dPrice').value=Number(item.price||0);calcFeedTotal();}
+}
+function calcFeedTotal(){
+ if($('dAmount')) $('dAmount').value=(Number($('dQty')?.value||0)*Number($('dPrice')?.value||0)).toFixed(2);
+}
+async function saveInventoryItem(){
+ try{
+  const name=$('invName').value.trim(),unit=$('invUnit').value,price=Number($('invPrice').value),stock=Number($('invStock').value||0);
+  if(!name||!Number.isFinite(price)||price<0||stock<0)throw new Error('Enter a feed name, valid price and stock quantity.');
+  await api('state',{method:'PUT',body:JSON.stringify({feedInventory:[{name,unit,price,stock}]})});
+  await loadState();companyTab('inventory');
+  alertBox('inventoryAlert','Feed inventory saved successfully.',true);
+ }catch(e){if($('inventoryAlert'))alertBox('inventoryAlert',e.message);}
+}
+function exportSummary(){
+ const lines=[['Member ID','Farmer Name','Total Milk (L)','Gross Amount','Feed Deduction','Net Payable']];
+ (state.farmers||[]).forEach(f=>{const ms=state.milkEntries.filter(x=>x.memberId===f.memberId),ds=state.feedEntries.filter(x=>x.memberId===f.memberId);const qty=ms.reduce((a,x)=>a+Number(x.quantity||0),0),gross=ms.reduce((a,x)=>a+Number(x.amount||0),0),ded=ds.reduce((a,x)=>a+Number(x.total||0),0);lines.push([f.memberId,f.name,qty.toFixed(2),gross.toFixed(2),ded.toFixed(2),(gross-ded).toFixed(2)]);});
+ const csv=lines.map(row=>row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n');
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));a.download='milk-dairy-summary.csv';a.click();URL.revokeObjectURL(a.href);
+}
 
 /*
 SAVE RATE
@@ -1650,8 +1217,7 @@ throw new Error(
 }
 
 
-const rate=
-Number(state.settings.milkRate)||0;
+const rate=Number($('mRate')?.value)||Number(state.settings.milkRate)||0;
 
 
 const e={
@@ -1712,71 +1278,18 @@ ADD FEED
 */
 
 async function addFeed(){
-
-try{
-
-const q=Number($('dQty').value);
-
-const p=Number($('dPrice').value);
-
-
-const e={
-
-memberId:$('dFarmer').value,
-
-date:$('dDate').value,
-
-item:$('dItem').value,
-
-quantity:q,
-
-unitPrice:p,
-
-total:q*p
-
-};
-
-
-if(!e.item){
-
-throw new Error(
-'Enter feed item'
-);
-
+ try{
+  const q=Number($('dQty').value),p=Number($('dPrice').value),item=$('dItem').value;
+  if(!item)throw new Error('Select a feed item from inventory.');
+  if(!Number.isFinite(q)||q<=0)throw new Error('Enter a quantity greater than zero.');
+  if(!Number.isFinite(p)||p<0)throw new Error('Enter a valid unit price.');
+  const stockItem=state.feedInventory.find(x=>x.name===item);
+  if(stockItem && q>Number(stockItem.stock||0))throw new Error(`Insufficient stock. Available: ${stockItem.stock} ${stockItem.unit||''}`);
+  await api('state',{method:'PUT',body:JSON.stringify({feedEntries:[{memberId:$('dFarmer').value,date:$('dDate').value,item,quantity:q,unitPrice:p,total:q*p}]})});
+  await loadState();companyTab('feed');
+  alertBox('feedAdminAlert','Feed deduction saved and inventory updated.',true);
+ }catch(e){if($('feedAdminAlert'))alertBox('feedAdminAlert',e.message);}
 }
-
-
-await api(
-'state',
-{
-method:'PUT',
-body:JSON.stringify({
-feedEntries:[e]
-})
-}
-);
-
-
-await loadState();
-
-companyTab('feed');
-
-
-}catch(e){
-
-if($('feedAdminAlert')){
-
-alertBox(
-'feedAdminAlert',
-e.message
-);
-
-}
-
-}
-
-}
-
 
 /*
 ==================================================
@@ -1816,6 +1329,7 @@ rows.reduce(
 (a,x)=>a+Number(x.amount||0),
 0
 );
+const totalDed=feed.reduce((a,x)=>a+Number(x.total||0),0);
 
 
 $('fStats').innerHTML=`
@@ -1846,18 +1360,9 @@ ${money(total)}
 </div>
 
 
-<div class="card stat">
-
-<span class="muted">
-Current Rate
-</span>
-
-<strong>
-${money(state.settings.milkRate)}/L
-</strong>
-
-</div>
-
+<div class="card stat"><span class="muted">Current Rate</span><strong>${money(state.settings.milkRate)}/L</strong></div>
+<div class="card stat"><span class="muted">Feed Deduction</span><strong>${money(totalDed)}</strong></div>
+<div class="card stat"><span class="muted">Net Payable</span><strong>${money(total-totalDed)}</strong></div>
 `;
 
 
